@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="module_ey_base_category" model="ir.module.category">
+            <field name="name">E-Yacht</field>
+            <field name="description">Permessi sul gestionale E-Yacht</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="res_groups_privilege_ey_base" model="res.groups.privilege">
+            <field name="name">E-Yacht</field>
+            <field name="category_id" ref="module_ey_base_category"/>
+        </record>
+
+        <record id="group_ey_base_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="privilege_id" ref="res_groups_privilege_ey_base"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="user_ids" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+
+        <record id="group_ey_base_user" model="res.groups">
+            <field name="name">Utente</field>
+            <field name="privilege_id" ref="res_groups_privilege_ey_base"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+    </data>
+</odoo>

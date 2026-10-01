@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Macro helper: una list+form minimale per ogni lookup ──── -->
+
+    <record id="view_porto_list" model="ir.ui.view">
+        <field name="name">ey_base.porto.list</field>
+        <field name="model">ey_base.porto</field>
+        <field name="arch" type="xml">
+            <list string="Porti" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_base_porto" model="ir.actions.act_window">
+        <field name="name">Porti</field>
+        <field name="res_model">ey_base.porto</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_tipo_registro_list" model="ir.ui.view">
+        <field name="name">ey_base.tipo_registro_unita.list</field>
+        <field name="model">ey_base.tipo_registro_unita</field>
+        <field name="arch" type="xml">
+            <list string="Tipi registro" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_base_tipo_registro" model="ir.actions.act_window">
+        <field name="name">Tipi registro</field>
+        <field name="res_model">ey_base.tipo_registro_unita</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_utilizzo_nave_list" model="ir.ui.view">
+        <field name="name">ey_base.utilizzo_nave.list</field>
+        <field name="model">ey_base.utilizzo_nave</field>
+        <field name="arch" type="xml">
+            <list string="Utilizzi" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_base_utilizzo_nave" model="ir.actions.act_window">
+        <field name="name">Utilizzi nave</field>
+        <field name="res_model">ey_base.utilizzo_nave</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_tipo_unita_list" model="ir.ui.view">
+        <field name="name">ey_base.tipo_unita.list</field>
+        <field name="model">ey_base.tipo_unita</field>
+        <field name="arch" type="xml">
+            <list string="Tipi unità" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_base_tipo_unita" model="ir.actions.act_window">
+        <field name="name">Tipi unità navale</field>
+        <field name="res_model">ey_base.tipo_unita</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_ente_sorveglianza_list" model="ir.ui.view">
+        <field name="name">ey_base.ente_sorveglianza.list</field>
+        <field name="model">ey_base.ente_sorveglianza</field>
+        <field name="arch" type="xml">
+            <list string="Enti di sorveglianza" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_base_ente_sorveglianza" model="ir.actions.act_window">
+        <field name="name">Enti di sorveglianza</field>
+        <field name="res_model">ey_base.ente_sorveglianza</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_ruolo_rappresentante_list" model="ir.ui.view">
+        <field name="name">ey_base.ruolo_rappresentante.list</field>
+        <field name="model">ey_base.ruolo_rappresentante</field>
+        <field name="arch" type="xml">
+            <list string="Ruoli rappresentante" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_base_ruolo_rappresentante" model="ir.actions.act_window">
+        <field name="name">Ruoli rappresentante</field>
+        <field name="res_model">ey_base.ruolo_rappresentante</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_tipo_cert_bordo_list" model="ir.ui.view">
+        <field name="name">ey_base.tipo_cert_bordo.list</field>
+        <field name="model">ey_base.tipo_cert_bordo</field>
+        <field name="arch" type="xml">
+            <list string="Tipi certificato bordo" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_base_tipo_cert_bordo" model="ir.actions.act_window">
+        <field name="name">Tipi certificato bordo</field>
+        <field name="res_model">ey_base.tipo_cert_bordo</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_adempimento_nave_list" model="ir.ui.view">
+        <field name="name">ey_base.adempimento_nave.list</field>
+        <field name="model">ey_base.adempimento_nave</field>
+        <field name="arch" type="xml">
+            <list string="Adempimenti" editable="bottom">
+                <field name="name"/>
+                <field name="tipo_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_ey_base_adempimento_nave" model="ir.actions.act_window">
+        <field name="name">Adempimenti nave</field>
+        <field name="res_model">ey_base.adempimento_nave</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

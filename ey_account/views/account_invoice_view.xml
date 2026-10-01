@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- wizard action on res.partner -->
+        <act_window id="account_invoice_update_move_lines"
+                    name="Update move lines"
+                    src_model="account.invoice"
+                    res_model="ey_account.wiz_update_move_lines"
+                    view_type="form"
+                    view_mode="form"
+                    key2="client_action_multi"
+                    target="new"
+        />
+
+    </data>
+</openerp>

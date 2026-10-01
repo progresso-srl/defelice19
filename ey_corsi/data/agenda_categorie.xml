@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ey_corsi.categoria_agenda_marittimo" id="agenda_cert_acc">
+            <field name="name">Certificato accreditamento</field>
+        </record>
+        <record model="ey_corsi.categoria_agenda_marittimo" id="agenda_cert_ente_terzi">
+            <field name="name">Certificato IAMI</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <!-- form view -->
+        <record id="ey_iscrizione_form_view" model="ir.ui.view">
+            <field name="name">ey.iscrizione.form.inherit</field>
+            <field name="model">ey.iscrizione</field>
+            <field name="inherit_id" ref="ey.ey_iscrizione_form_view"/>
+            <field eval="7" name="priority"/>
+            <field name="arch" type="xml">
+                <notebook position="after">
+                    <group>
+                        <field name="note" />
+                    </group>
+                </notebook>
+            </field>
+        </record>
+
+    </data>
+</openerp>

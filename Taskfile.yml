@@ -1,0 +1,38 @@
+# https://taskfile.dev
+
+version: '3'
+schema: 'https://taskfile.dev/schema/project_v3.json'
+
+vars:
+  GREETING: Hello, developer!
+
+env:
+  ADDONS_PATH: l10n_it_asset_management_odoo
+  ODOO_BIN: C:/Users/Francesco/Developer/Progresso/odoo/odoo-bin
+  ODOO_CONF: C:/Users/Francesco/Developer/Progresso/odoo19.conf
+  DB_NAME: odoo-19
+  MODULES: ey_account,ey_base,ey_contabilita_navi,ey_corsi,ey_pratiche
+
+tasks:
+  psql:
+    desc: Open psql shell using DOS short path
+    interactive: true
+    cmds:
+      - cmd /c "set PGPASSWORD=odoo&& C:\PROGRA~1\PostgreSQL\16\bin\psql.exe -U odoo -d odoo-19"
+
+  db-safe:
+    desc: Update login and password using echo pipe ( foolproof on Windows )
+    interactive: true
+    cmds:
+      - cmd /c "set PGPASSWORD=odoo&& echo UPDATE res_users SET login='admin' WHERE id=2;| C:\PROGRA~1\PostgreSQL\16\bin\psql.exe -U odoo -d odoo-19"
+      - cmd /c "set PGPASSWORD=odoo&& echo UPDATE res_users SET password='admin' WHERE id=2;| C:\PROGRA~1\PostgreSQL\16\bin\psql.exe -U odoo -d odoo-19"
+
+  update_all:
+    desc: Aggiorna tutti i moduli di Odoo
+    cmds:
+      - cmd /c "python {{.ODOO_BIN}} -c {{.ODOO_CONF}} -d {{.DB_NAME}} -u all --stop-after-init"
+
+  update:
+    desc: Aggiorna il modulo specificato in .MODULES
+    cmds:
+      - cmd /c "python {{.ODOO_BIN}} -c {{.ODOO_CONF}} -d {{.DB_NAME}} -u {{.MODULES}} --stop-after-init"

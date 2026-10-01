@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="ey2_rappresentante_armatore_tree_view" model="ir.ui.view">
+            <field name="name">ey2.rappresentante_armatore.tree</field>
+            <field name="model">ey2.rappresentante_armatore</field>
+            <field name="arch" type="xml">
+                <tree string="Rappresentanti">
+                    <field name="cognome"/>
+                    <field name="nome"/>
+                    <field name="data_nascita"/>
+                    <field name="cittadinanza_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ey2_rappresentante_armatore_search_view" model="ir.ui.view">
+            <field name="name">ey2.rappresentante_armatore.select</field>
+            <field name="model">ey2.rappresentante_armatore</field>
+            <field name="arch" type="xml">
+                <search string="Search...">
+                    <field name="cognome"/>
+                    <field name="nome"/>
+                    <field name="rec_name"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="ey2_rappresentante_armatore_form_view" model="ir.ui.view">
+            <field name="name">ey2.rappresentante_armatore.form</field>
+            <field name="model">ey2.rappresentante_armatore</field>
+            <field name="arch" type="xml">
+                <form string="Rappresentanti" version="7.0">
+                    <sheet>
+                        <notebook>
+                            <page string="Generale">
+                                <group>
+                                    <group>
+                                        <field name="cognome"/>
+                                        <field name="fiscalcode" />
+                                        <field name="cittadinanza_id"/>
+                                        <field name="email" widget="email" />
+                                        <field name="telefono" />
+                                    </group>
+                                    <group>
+                                        <field name="nome"/>
+                                        <field name="data_nascita" />
+                                        <field name="luogo_nascita_id" />
+                                        <field name="stato_civile" />
+                                    </group>
+                                </group>
+                                <group >
+                                    <label for="street" string="Address"/>
+                                    <div>
+                                        <field name="street" placeholder="Street..." />
+                                        <field name="street2" placeholder="Street 2..." />
+                                        <div class="address_format">
+                                            <field name="city" placeholder="City" style="width: 40%%" />
+                                            <field name="state_id" class="oe_no_button" placeholder="State"
+                                                   style="width: 37%%" options='{"no_open": True}' />
+                                            <field name="zip" placeholder="ZIP" style="width: 20%%" />
+                                        </div>
+                                        <field name="country_id" placeholder="Country" class="oe_no_button"
+                                               options='{"no_open": True, "no_create": True}' />
+                                    </div>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- action per creare un tpl -->
+        <record id="ey2_rappresentante_armatore_action" model="ir.actions.act_window">
+            <field name="name">Rappresentanti</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ey2.rappresentante_armatore</field>
+            <field name="view_type">form</field>
+            <field name="filter" eval="True"/>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="ey2_rappresentante_armatore_tree_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="ey2_rappresentante_armatore_tree_view"/>
+            <field name="act_window_id" ref="ey2_rappresentante_armatore_action"/>
+        </record>
+        <record id="ey2_rappresentante_armatore_form_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ey2_rappresentante_armatore_form_view"/>
+            <field name="act_window_id" ref="ey2_rappresentante_armatore_action"/>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ey_corsi.wiz_assegna_attestato -->
+    <record id="ey_wiz_assegna_attestato_view" model="ir.ui.view">
+        <field name="name">ey_corsi.wiz_assegna_attestato.form</field>
+        <field name="model">ey_corsi.wiz_assegna_attestato</field>
+        <field name="arch" type="xml">
+            <form string="Stampa e assegna attestati di frequenza">
+                <group>
+                    <group>
+                        <field name="data_rilascio"/>
+                    </group>
+                    <group>
+                        <field name="data_scadenza"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Conferma" name="button_assegna_certificato" type="object" class="oe_highlight"/>
+                    <button string="Annulla" special="cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="ey_wiz_assegna_attestato_action" model="ir.actions.act_window">
+        <field name="name">Attestati di frequenza</field>
+        <field name="res_model">ey_corsi.wiz_assegna_attestato</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_ey_corsi_wiz_iscritti_corso"/>
+        <field name="binding_view_types">list</field>
+    </record>
+
+    <!-- ey_corsi.wiz_iscritti_corso -->
+    <record id="ey_wiz_iscritti_corso_list_view" model="ir.ui.view">
+        <field name="name">ey_corsi.wiz_iscritti_corso.list</field>
+        <field name="model">ey_corsi.wiz_iscritti_corso</field>
+        <field name="arch" type="xml">
+            <list string="Iscritti al corso" create="false">
+                <field name="marittimo_id"/>
+                <field name="data_nascita"/>
+                <field name="luogo_nascita_id"/>
+                <field name="nazionalita_id"/>
+                <field name="superato_set" column_invisible="1"/>
+                <button name="button_corso_superato" string="Corso frequentato"
+                        class="oe_highlight" type="object" invisible="superato_set"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ey_wiz_iscritti_corso_search_view" model="ir.ui.view">
+        <field name="name">ey_corsi.wiz_iscritti_corso.select</field>
+        <field name="model">ey_corsi.wiz_iscritti_corso</field>
+        <field name="arch" type="xml">
+            <search string="Cerca">
+                <field name="marittimo_id"/>
+                <field name="corso_id"/>
+            </search>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <!-- *****************************************************************
+        *************************** FOLLOW UP GEST ***************************
+        ****************************************************************** -->
+
+        <record id="ey2_follow_up_gest_nave_tree_view" model="ir.ui.view">
+            <field name="name">ey2.follow_up_gest_nave.tree</field>
+            <field name="model">ey2.follow_up_gest_nave</field>
+            <field name="arch" type="xml">
+                <tree string="Follow up">
+                    <field name="data"/>
+                    <field name="operatore_id"/>
+                    <field name="referente"/>
+                    <field name="oggetto"/>
+                    <field name="prev_descrizione"/>
+                    <field name="document" filename="document_fname"/>
+                    <field name="document_fname" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ey2_follow_up_gest_nave_search_view" model="ir.ui.view">
+            <field name="name">ey2.follow_up_gest_nave.select</field>
+            <field name="model">ey2.follow_up_gest_nave</field>
+            <field name="arch" type="xml">
+                <search string="Search...">
+                    <field name="nave_id"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="ey2_follow_up_gest_nave_form_view" model="ir.ui.view">
+            <field name="name">ey2.follow_up_gest_nave.form</field>
+            <field name="model">ey2.follow_up_gest_nave</field>
+            <field name="arch" type="xml">
+                <form string="Follow up" version="7.0">
+                    <sheet>
+                        <notebook>
+                            <page string="Generale">
+                                <group>
+                                    <field name="data"/>
+                                    <field name="operatore_id"/>
+                                    <field name="referente"/>
+                                </group>
+                                <group>
+                                    <field name="oggetto"/>
+                                    <field name="document" filename="document_fname"/>
+                                    <field name="document_fname" invisible="1"/>
+                                    <field name="descrizione"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- action per creare un tpl -->
+        <record id="ey2_follow_up_gest_nave_action" model="ir.actions.act_window">
+            <field name="name">Follow up</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ey2.follow_up_gest_nave</field>
+            <field name="view_type">form</field>
+            <field name="filter" eval="True"/>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="ey2_follow_up_gest_nave_tree_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="ey2_follow_up_gest_nave_tree_view"/>
+            <field name="act_window_id" ref="ey2_follow_up_gest_nave_action"/>
+        </record>
+        <record id="ey2_follow_up_gest_nave_form_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ey2_follow_up_gest_nave_form_view"/>
+            <field name="act_window_id" ref="ey2_follow_up_gest_nave_action"/>
+        </record>
+
+        <!-- *****************************************************************
+        *************************** FOLLOW UP MED ***************************
+        ****************************************************************** -->
+
+        <record id="ey2_follow_up_med_nave_tree_view" model="ir.ui.view">
+            <field name="name">ey2.follow_up_med_nave.tree</field>
+            <field name="model">ey2.follow_up_med_nave</field>
+            <field name="arch" type="xml">
+                <tree string="Follow up">
+                    <field name="data"/>
+                    <field name="operatore_id"/>
+                    <field name="referente"/>
+                    <field name="oggetto"/>
+                    <field name="prev_descrizione"/>
+                    <field name="document" filename="document_fname"/>
+                    <field name="document_fname" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ey2_follow_up_med_nave_search_view" model="ir.ui.view">
+            <field name="name">ey2.follow_up_med_nave.select</field>
+            <field name="model">ey2.follow_up_med_nave</field>
+            <field name="arch" type="xml">
+                <search string="Search...">
+                    <field name="nave_id"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="ey2_follow_up_med_nave_form_view" model="ir.ui.view">
+            <field name="name">ey2.follow_up_med_nave.form</field>
+            <field name="model">ey2.follow_up_med_nave</field>
+            <field name="arch" type="xml">
+                <form string="Follow up" version="7.0">
+                    <sheet>
+                        <notebook>
+                            <page string="Generale">
+                                <group>
+                                    <field name="data"/>
+                                    <field name="operatore_id"/>
+                                    <field name="referente"/>
+                                </group>
+                                <group>
+                                    <field name="oggetto"/>
+                                    <field name="document" filename="document_fname"/>
+                                    <field name="document_fname" invisible="1"/>
+                                    <field name="descrizione"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- action per creare un tpl -->
+        <record id="ey2_follow_up_med_nave_action" model="ir.actions.act_window">
+            <field name="name">Follow up</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ey2.follow_up_med_nave</field>
+            <field name="view_type">form</field>
+            <field name="filter" eval="True"/>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="ey2_follow_up_med_nave_tree_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="ey2_follow_up_med_nave_tree_view"/>
+            <field name="act_window_id" ref="ey2_follow_up_med_nave_action"/>
+        </record>
+        <record id="ey2_follow_up_med_nave_form_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ey2_follow_up_med_nave_form_view"/>
+            <field name="act_window_id" ref="ey2_follow_up_med_nave_action"/>
+        </record>
+
+    </data>
+</openerp>

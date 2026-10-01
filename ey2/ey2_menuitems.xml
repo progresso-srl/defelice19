@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <menuitem
+            name="Adempimenti"
+            id="menu_ey2_adempimenti"
+            parent="base.ey_menu"
+            groups="ey.group_ey_manager,ey.group_ey_user"
+            sequence="100"
+        />
+
+        <menuitem
+            name="Aggiungi soggetto a..."
+            id="menu_ey2_wizard"
+            parent="base.ctpl_menu"
+            groups="ey.group_ey_manager,ey.group_ey_user"
+            sequence="150"
+        />
+
+        <menuitem
+            name="Pratiche"
+            id="menu_ey2_pratiche"
+            parent="base.ctpl_menu"
+            groups="ey.group_ey_manager,ey.group_ey_user"
+            sequence="120"
+        />
+
+        <!-- Normative -->
+        <menuitem
+            name="Gestione normative"
+            id="base.ey2_gestione_normative"
+            sequence="50"
+            groups="ey.group_ey_manager,ey.group_ey_user"
+        />
+        <menuitem
+            name="Gestione normative"
+            id="menu_ey2_normative"
+            parent="base.ey2_gestione_normative"
+            groups="ey.group_ey_manager,ey.group_ey_user"
+            sequence="10"
+        />
+
+        <!-- Saldo navi -->
+
+        <menuitem
+            name="Saldo navi"
+            id="base.ey2_saldo_navi"
+            sequence="60"
+            groups="ey.group_ey_manager,ey.group_ey_user"
+        />
+        <menuitem
+            name="Contratti"
+            id="menu_ey2_contratti_saldo_navi"
+            parent="base.ey2_saldo_navi"
+            groups="ey.group_ey_manager,ey.group_ey_user"
+            sequence="10"
+        />
+
+
+    </data>
+</openerp>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+            <record id="module_ey_pratiche_group_category" model="ir.module.category">
+                <field name="name">E-Yachts Pratiche</field>
+                <field name="description">Permessi sulle pratiche gestite da E-Yachts</field>
+                <field name="sequence">10</field>
+            </record>
+    
+            <record id="group_ey_pratiche_manager" model="res.groups">
+                <field name="name">E-Yachts Pratiche Manager</field>
+            </record>
+    
+            <record id="group_ey_pratiche_user" model="res.groups">
+                <field name="name">E-Yachts Pratiche User</field>
+            </record>
+       
+    </data>
+</odoo>

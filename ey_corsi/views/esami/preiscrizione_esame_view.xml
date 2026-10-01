@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ey_corsi_pre_iscrizione_esame_list_view" model="ir.ui.view">
+        <field name="name">ey_corsi.pre_iscrizione_esame.list</field>
+        <field name="model">ey_corsi.pre_iscrizione_esame</field>
+        <field name="arch" type="xml">
+            <list string="Pre-Iscrizioni">
+                <field name="template_id"/>
+                <field name="marittimo_id"/>
+                <field name="data_iscrizione"/>
+                <field name="prezzo_esame"/>
+                <field name="esito"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ey_corsi_pre_iscrizione_esame_search_view" model="ir.ui.view">
+        <field name="name">ey_corsi.pre_iscrizione_esame.search</field>
+        <field name="model">ey_corsi.pre_iscrizione_esame</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="template_id"/>
+                <field name="esame_id"/>
+                <field name="marittimo_id"/>
+                <filter name="epreiscrizioni_non_annullate" string="Non annullate" domain="[('esito','!=','annullata')]"/>
+                <separator/>
+                <group name="groupby">
+                    <filter name="group_iscrizione_esame_esame" string="Per esame" context="{'group_by':'esame_id'}"/>
+                    <filter name="group_epre_iscrizione_template_id" string="Per template" context="{'group_by':'template_id'}"/>
+                    <filter name="group_iscrizione_esame_marittimo" string="Per marittimo" context="{'group_by':'marittimo_id'}"/>
+                    <filter name="group_iscrizione_esame_date" string="Mensile" context="{'group_by':'data_iscrizione'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- NON portato: "Stampa reg. form"/rf_compilato dipendeva dal report py3o
+         (STEP 12: sostituito da report QWeb). -->
+    <record id="ey_corsi_pre_iscrizione_esame_form_view" model="ir.ui.view">
+        <field name="name">ey_corsi.pre_iscrizione_esame.form</field>
+        <field name="model">ey_corsi.pre_iscrizione_esame</field>
+        <field name="arch" type="xml">
+            <form string="Pre-Iscrizioni">
+                <header>
+                    <button name="crea_iscrizione" string="Crea iscrizione" type="object"
+                            invisible="iscrizione_id"/>
+                </header>
+                <sheet>
+                    <notebook>
+                        <page name="generale">
+                            <group>
+                                <field name="created" invisible="1"/>
+                                <group>
+                                    <field name="template_id" readonly="created"/>
+                                    <field name="esame_id" readonly="not template_id" options="{'no_create': True}"
+                                           domain="[('data_esame','&gt;=',context_today().strftime('%Y-%m-%d')), ('computed','=',False)]"/>
+                                    <field name="data_iscrizione"/>
+                                    <field name="tipo_iscritto"/>
+                                </group>
+                                <group>
+                                    <field name="marittimo_id" readonly="created" context="{'default_anagrafica_ey': True}"/>
+                                    <field name="destinatario_id" domain="[('customer_rank','&gt;',0)]"/>
+                                    <field name="prezzo_esame"/>
+                                    <field name="prezzo_scontato"/>
+                                </group>
+                            </group>
+                            <group string="Documenti marittimo">
+                                <field name="documento_ids" nolabel="1" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="iscrizione_id" readonly="1"/>
+                            </group>
+                            <group string="Esito">
+                                <field name="esito"/>
+                                <field name="note_esito"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ey_corsi_pre_iscrizione_esame" model="ir.actions.act_window">
+        <field name="name">Preiscrizioni agli esami</field>
+        <field name="res_model">ey_corsi.pre_iscrizione_esame</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="ey_corsi_pre_iscrizione_esame_search_view"/>
+        <field name="context">{'search_default_epreiscrizioni_non_annullate': 1}</field>
+    </record>
+
+</odoo>

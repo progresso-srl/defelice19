@@ -1,0 +1,5 @@
+Come funzionano i referenti pratica? quando si inseriscono partner o nave?
+Cercare tutti i nomi dei vecchi modelli su odoo 8 e vedere se ci sono altre cose da aggiungere (es view, cron, ecc..)
+Nelle funzioni dei modelli che hanno il pratica_id ricontrollare nel codice di odoo8 se faceva distinzioni tra le pratiche navi e quelle soggetti
+-------------
+Controllare tutti i valori delle selection di ODOO8 quando vengono usati nel codice vecchio

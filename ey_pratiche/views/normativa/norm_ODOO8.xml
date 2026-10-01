@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="ey2_normativa_tree_view" model="ir.ui.view">
+            <field name="name">ey2.normativa.tree</field>
+            <field name="model">ey2.normativa</field>
+            <field name="arch" type="xml">
+                <list string="Normative">
+                    <field name="ufficio_emissione_id"/>
+                    <field name="natura_id"/>
+                    <field name="numero_provvedimento"/>
+                    <field name="data_provvedimento"/>
+                    <field name="ambito_id"/>
+                    <field name="categoria_id"/>
+                    <field name="testo_descrittivo"/>
+                    <field name="write_date" string="Ultimo aggiornamento"/>
+                    <field name="attivo" />
+                </list>
+            </field>
+        </record>
+
+        <record id="ey2_normativa_search_view" model="ir.ui.view">
+            <field name="name">ey2.normativa.select</field>
+            <field name="model">ey2.normativa</field>
+            <field name="arch" type="xml">
+                <search string="Search...">
+                    <field name="tipo_id"/>
+                    <field name="ambito_id"/>
+                    <field name="categoria_id"/>
+                    <field name="natura_id"/>
+                    <field name="numero_provvedimento"/>
+                    <field name="testo_descrittivo"/>
+
+                    <!-- FILTRI PREDEFINITI -->
+                    <group string="Filtri predefiniti">
+                        <filter name="normative_attive" string="Attive"
+                                domain="[('attivo','=', True)]"/>
+
+                    </group>
+                    <!-- RAGGRUPPAMENTI -->
+                    <group string="Group by...">
+                        <filter name="group_ey2_normativa_tipo" string="Tipologia" icon="terp-partner"
+                                context="{'group_by':'tipo_id'}"/>
+                        <filter name="group_ey2_normativa_vategoria" string="Categoria" icon="terp-partner"
+                                context="{'group_by':'categoria_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="ey2_normativa_form_view" model="ir.ui.view">
+            <field name="name">ey2.normativa.form</field>
+            <field name="model">ey2.normativa</field>
+            <field name="arch" type="xml">
+                <form string="Normativa" version="7.0">
+                    <sheet>
+                        <div class="oe_title" style="width: 80%">
+                            <h1 attrs="{'invisible': [('id', '!=', False)]}">Nuova normativa</h1>
+                            <h1>
+                                <field name="id" invisible="1"/>
+                                <field name="name" placeholder="Nome"
+                                       attrs="{'invisible': [('id', '=', False)]}"/>
+                            </h1>
+                        </div>
+                        <notebook>
+                            <page string="Generale">
+                                <group>
+                                    <group>
+                                        <field name="tipo_id"/>
+                                        <field name="data_provvedimento"/>
+                                        <field name="numero_provvedimento" style="width: 25%"/>
+                                        <field name="testo_descrittivo"/>
+                                        <field name="ufficio_emissione_id"/>
+                                    </group>
+                                    <group>
+                                        <field name="ambito_id"/>
+                                        <field name="categoria_id"/>
+                                        <field name="natura_id"/>
+                                        <field name="attivo" />
+                                        <field name="write_date" readonly="1" string="Ultimo aggiornamento"/>
+                                    </group>
+                                </group>
+                                <group string="Allegati">
+                                    <field name="documento_ids" nolabel="1">
+                                        <list editable="bottom">
+                                            <field name="name"/>
+                                            <field name="document" filename="document_fname"/>
+                                            <field name="document_fname" invisible="1"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <group string="Normative collegate">
+                                    <field name="normative_collegate" options="{'no_create': True}"
+                                           domain="[('id', '!=', id)]" nolabel="1">
+                                        <list>
+                                            <field name="tipo_id"/>
+                                            <field name="natura_id"/>
+                                            <field name="data_provvedimento"/>
+                                            <field name="numero_provvedimento"/>
+                                            <field name="testo_descrittivo"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <group>
+                                    <field name="note"/>
+                                </group>
+                            </page>
+                            <page string="Info sito">
+                                <group>
+                                    <group>
+                                        <field name="pubblicato"/>
+                                        <field name="titolo_sito"/>
+                                    </group>
+                                    <group/>
+                                </group>
+                                <group>
+                                    <field name="descrizione_sito"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- action per creare un tpl -->
+        <record id="ey2_normativa_action" model="ir.actions.act_window">
+            <field name="name">Normative</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ey2.normativa</field>
+            <field name="view_type">form</field>
+            <field name="context" eval="{'search_default_normative_attive': 1}"/>
+            <field name="filter" eval="True"/>
+            <field name="view_mode">list,form</field>
+        </record>
+        <record id="ey2_normativa_tree_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="ey2_normativa_tree_view"/>
+            <field name="act_window_id" ref="ey2_normativa_action"/>
+        </record>
+        <record id="ey2_normativa_form_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ey2_normativa_form_view"/>
+            <field name="act_window_id" ref="ey2_normativa_action"/>
+        </record>
+
+        <!--crea la voce del menu -->
+        <menuitem
+                id="ey2_normativa_menu" name="Normative"
+                parent="menu_ey2_normative"
+                action="ey2_normativa_action"
+                sequence="10"
+        />
+
+    </data>
+</openerp>

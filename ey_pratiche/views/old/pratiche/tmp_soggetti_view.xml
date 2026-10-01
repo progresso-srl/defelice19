@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <!-- tree view -->
+        <record id="ey_pratiche_tpl_sgt_tree_view" model="ir.ui.view">
+            <field name="name">ey_pratiche.tpl.tree</field>
+            <field name="model">ey_pratiche.tpl</field>
+            <field name="arch" type="xml">
+                <list string="Template pratiche">
+                    <field name="name"/>
+                     <field name="versione"/>
+                    <field name="tipo_pratica" />
+                    <field name="stato_template" />
+                </list>
+            </field>
+        </record>
+
+
+        <!-- search view -->
+        <record id="ey_pratiche_tpl_sgt_search_view" model="ir.ui.view">
+            <field name="name">ey_pratiche.tpl.select</field>
+            <field name="model">ey_pratiche.tpl</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="tipo_pratica" />
+                    <field name="versione"/>
+
+                    <group string="Filtri predefiniti">
+                        <filter name="tpl_attivi" string="Attivi" domain="[('stato_template','=', 'Attivo')]"/>
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+
+        <!-- form view -->
+        <record id="ey_pratiche_tpl_sgt_form_view" model="ir.ui.view">
+            <field name="name">ey_pratiche.tpl.form</field>
+            <field name="model">ey_pratiche.tpl</field>
+            <field eval="7" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Template pratiche" version="7.0">
+                    <header>
+                        <button name="button_duplica" string="Duplica"
+                                class="oe_highlight" type="object"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title" style="width: 80%">
+                            <h1>
+                                <field name="created" invisible="1"/>
+                                <field name="name" placeholder="Nome"/>
+                            </h1>
+                            <h4>
+                                <field name="versione" placeholder="versione" />
+                            </h4>
+                        </div>
+                        <notebook>
+                            <page string="Generale">
+                                <group>
+                                    <group>
+                                        <field name="tipo_pratica" readonly="1"/>
+                                        <field name="tipo_template" readonly="1" />
+                                    </group>
+                                    <group>
+                                        <field name="stato_template" />
+                                    </group>
+
+                                </group>
+                                <group string="Chiavi">
+                                    <field name="chiave_ids" nolabel="1">
+                                        <list editable="top">
+                                            <field name="chiave"/>
+                                            <field name="descrizione" />
+                                            <field name="tipo_chiave"/>
+                                            <field name="valore"
+                                                   attrs="{'readonly': [('tipo_chiave', '=', 'Campo')]}" />
+                                            <field name="priority" />
+                                        </list>
+                                    </field>
+                                </group>
+                                <group string="Documenti (per report)">
+                                    <field name="document_ids" nolabel="1"/>
+                                </group>
+                                <group string="Info operatore">
+                                    <field name="info_operatore" />
+                                </group>
+                                <group string="Allegati">
+                                    <field name="allegato_ids" nolabel="1">
+                                        <list editable="bottom">
+                                            <field name="name" />
+                                            <field name="document" filename="document_fname" />
+                                            <field name="document_fname" invisible="1" />
+                                        </list>
+                                    </field>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <!--         action per creare un tpl -->
+        <record id="ey_pratiche_tpl_sgt_action" model="ir.actions.act_window">
+            <field name="name">Template pratiche soggetti</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ey_pratiche.tpl</field>
+            <field name="domain">
+                [('tipo_template', '=', 'Soggetti')]
+            </field>
+            <field name="context">
+                {'search_default_tpl_attivi': 1, 'default_tipo_template': 'Soggetti', 'default_tipo_pratica': 'Altro'}
+            </field>
+            <field name="view_type">form</field>
+            <field name="filter" eval="True"/>
+            <field name="view_mode">list,form</field>
+        </record>
+        <record id="ey_pratiche_tpl_sgt_tree_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="ey_pratiche_tpl_sgt_tree_view"/>
+            <field name="act_window_id" ref="ey_pratiche_tpl_sgt_action"/>
+        </record>
+        <record id="ey_pratiche_tpl_sgt_form_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ey_pratiche_tpl_sgt_form_view"/>
+            <field name="act_window_id" ref="ey_pratiche_tpl_sgt_action"/>
+        </record>
+
+        <!--crea la voce del menu -->
+        <menuitem
+                id="ey_pratiche_tpl_sgt_menu" name="Template pratiche soggetti"
+                parent="ey_pratiche.configurazione_menu"
+                action="ey_pratiche_tpl_sgt_action"
+                sequence="15"
+        />
+
+    </data>
+</odoo>

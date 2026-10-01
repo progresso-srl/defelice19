@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <!-- form view -->
+        <record id="ey_contabilita_navi_wiz_collega_linea_spesa_armatore_form_view" model="ir.ui.view">
+            <field name="name">ey_contabilita_navi.wiz_collega_linea_spesa_armatore.form</field>
+            <field name="model">ey_contabilita_navi.wiz_collega_linea_spesa_armatore</field>
+            <field name="arch" type="xml">
+                <form string="Collega linea spesa">
+                    <group>
+                        <field name="account_move_id" readonly="1" invisible="1" />
+                        <field name="unita_id"
+                            options="{'no_create': True, 'no_create_edit' : True}" />
+                        <field name="previsionali_id"
+                            options="{'no_create': True, 'no_create_edit' : True}"
+                            invisible="unita_id == False" />
+                        <field name="anticipi_id"
+                            options="{'no_create': True, 'no_create_edit' : True}"
+                            invisible="previsionali_id == False" />
+                    </group>
+                    <footer>
+                        <button name="button_collega_linea_spesa_armatore" string="Collega linea anticipo armatore"
+                            type="object"
+                            class="oe_highlight" /> o <button string="Annulla" class="oe_link"
+                            special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="ey_contabilita_navi_wiz_collega_linea_spesa_armatore_action"
+            model="ir.actions.act_window">
+            <field name="name">Collega linea anticipo armatore</field>
+            <field name="res_model">ey_contabilita_navi.wiz_collega_linea_spesa_armatore</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <record id="ey_contabilita_navi_wiz_collega_linea_spesa_armatore_form_act"
+            model="ir.actions.act_window.view">
+            <field name="sequence" eval="1" />
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ey_contabilita_navi_wiz_collega_linea_spesa_armatore_form_view" />
+            <field name="act_window_id"
+                ref="ey_contabilita_navi_wiz_collega_linea_spesa_armatore_action" />
+        </record>
+
+    </data>
+</odoo>

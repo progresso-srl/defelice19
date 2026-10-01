@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="ey2_ente_tree_view" model="ir.ui.view">
+            <field name="name">ey2.ente.tree</field>
+            <field name="model">ey2.ente</field>
+            <field name="arch" type="xml">
+                <tree string="Enti">
+                    <field name="denominazione"/>
+                    <field name="sede_id"/>
+                    <field name="ufficio_id"/>
+                    <field name="phone" />
+                    <field name="email"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ey2_ente_search_view" model="ir.ui.view">
+            <field name="name">ey2.ente.select</field>
+            <field name="model">ey2.ente</field>
+            <field name="arch" type="xml">
+                <search string="Search...">
+                    <field name="denominazione"/>
+                    <field name="sede_id"/>
+                    <field name="ufficio_id"/>
+                    <field name="fiscalcode" />
+                </search>
+            </field>
+        </record>
+
+        <record id="ey2_ente_form_view" model="ir.ui.view">
+            <field name="name">ey2.ente.form</field>
+            <field name="model">ey2.ente</field>
+            <field name="arch" type="xml">
+                <form string="Ente" version="7.0">
+                    <sheet>
+                        <notebook>
+                            <page string="Generale">
+                                <group>
+                                    <group>
+                                        <field name="denominazione"/>
+                                        <field name="sede_id"/>
+                                        <field name="ufficio_id" />
+                                        <field name="fiscalcode" />
+                                    </group>
+                                    <group>
+                                        <field name="contatto" />
+                                        <field name="email" />
+                                        <field name="phone"/>
+                                        <field name="fax" />
+                                    </group>
+                                </group>
+                                <group >
+                                    <label for="street" string="Address"/>
+                                    <div>
+                                        <field name="street" placeholder="Street..." />
+                                        <field name="street2" placeholder="Street 2..." />
+                                        <div class="address_format">
+                                            <field name="city" placeholder="City" style="width: 40%%" />
+                                            <field name="state_id" class="oe_no_button" placeholder="State"
+                                                   style="width: 37%%" options='{"no_open": True}' />
+                                            <field name="zip" placeholder="ZIP" style="width: 20%%" />
+                                        </div>
+                                        <field name="country_id" placeholder="Country" class="oe_no_button"
+                                               options='{"no_open": True, "no_create": True}' />
+                                    </div>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- action per creare un tpl -->
+        <record id="ey2_ente_action" model="ir.actions.act_window">
+            <field name="name">Enti</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ey2.ente</field>
+            <field name="view_type">form</field>
+            <field name="filter" eval="True"/>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="ey2_ente_tree_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="ey2_ente_tree_view"/>
+            <field name="act_window_id" ref="ey2_ente_action"/>
+        </record>
+        <record id="ey2_ente_form_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ey2_ente_form_view"/>
+            <field name="act_window_id" ref="ey2_ente_action"/>
+        </record>
+
+        <!--crea la voce del menu -->
+        <menuitem
+                id="ey2_ente_menu" name="Enti"
+                parent="menu_ey2_pratiche"
+                action="ey2_ente_action"
+                sequence="30"
+        />
+
+    </data>
+</openerp>

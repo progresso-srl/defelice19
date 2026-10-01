@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_res_partner_filter" model="ir.ui.view">
+            <field name="name">res.partner.select.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="ey.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <search position="inside">
+                    <!-- FILTRI -->
+                    <filter name="filter_armatore_proprietario" string="Armatore / Proprietario"
+                            domain="[('armatore_proprietario','=', 'True')]"/>
+                    <filter name="filter_altri_soggetti" string="Altri soggetti"
+                            domain="[('altri_soggetti','=', 'True')]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_partner_form" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="ey.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//label[@string='Address']" position="before">
+                    <field name="armatore_proprietario"/>
+                    <field name="altri_soggetti"/>
+                </xpath>
+                <field name="email" position="after">
+                    <field name="pec"/>
+                </field>
+                <notebook position="before">
+                    <group string="Altri soggetti">
+                        <field name="rappresentante_ruolo_ids" nolabel="1">
+                            <list editable="bottom">
+                                <field name="rappresentante_id"
+                                       domain="[('altri_soggetti', '=', True)]"
+                                       context="{'default_altri_soggetti': 1}"/>
+                                <field name="ruolo_id"/>
+                                <field name="identificatore"/>
+                                <field name="testo_descrittivo"/>
+                                <field name="riferimento"/>
+                            </list>
+                        </field>
+                    </group>
+                </notebook>
+                <notebook position="inside">
+                    <page string="Armatore" attrs="{'invisible': [('armatore_proprietario','=', False)]}">
+                        <group>
+                            <group>
+                                <field name="codice_eori"/>
+                            </group>
+                            <group/>
+                        </group>
+                        <group string="INPS">
+                            <group>
+                                <field name="user_inps"/>
+                            </group>
+                            <group>
+                                <field name="pwd_inps"/>
+                            </group>
+                        </group>
+                        <group string="INAIL">
+                            <group>
+                                <field name="cod_ditta_inail"/>
+                                <field name="pin_inail"/>
+                            </group>
+                            <group>
+                                <field name="sede_inail"/>
+                            </group>
+                        </group>
+                        <group string="FANIMAR">
+                            <group>
+                                <field name="cod_ditta_fanimar"/>
+                            </group>
+                            <group>
+                                <field name="pwd_fanimar"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Follow up">
+                        <field name="follow_up_marittimo_ids"/>
+                    </page>
+                    <page string="Pratiche nave">
+                        <group string="Imbarchi/Sbarchi">
+                            <field name="imbarco_sbarco_ids" readonly="1" nolabel="1">
+                                <list>
+                                    <field name="tpl_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="tipo_pratica"/>
+                                    <field name="qualifica_id"/>
+                                    <field name="data_pratica"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </group>
+                        <group string="Altre pratiche">
+                            <field name="altra_pratica_ids" readonly="1" nolabel="1">
+                                <list>
+                                    <field name="tpl_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="tipo_pratica"/>
+                                    <field name="qualifica_id"/>
+                                    <field name="data_pratica"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </group>
+                    </page>
+                    <page string="Pratiche soggetto">
+                        <group string="Pratiche attive">
+                            <field name="pratica_soggetto_attiva_ids" readonly="1" nolabel="1">
+                                <list>
+                                    <field name="tpl_id"/>
+                                    <field name="data_pratica"/>
+                                    <field name="user_id"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </group>
+                        <group string="Pratiche concluse">
+                            <field name="pratica_soggetto_ferma_ids" readonly="1" nolabel="1">
+                                <list>
+                                    <field name="tpl_id"/>
+                                    <field name="data_pratica"/>
+                                    <field name="user_id"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </group>
+                    </page>
+                    <page string="Adempimenti" attrs="{'invisible': [('anagrafica_ey','=', False)]}">
+                        <field name="adempimenti" options="{'no_create': True}"/>
+                    </page>
+                    <page string="Navi" attrs="{'invisible': [('armatore_proprietario','=', False)]}">
+                        <field name="nave_arm_prop_ids" readonly="1">
+                            <list editable="bottom">
+                                <field name="nave_name" />
+                                <field name="nave_tipo_registro" />
+                                <field name="nave_nr_on" />
+                                <field name="nave_porto" />
+                                <field name="nave_bandiera" />
+                                <field name="nave_iva" />
+                                <field name="armatore_proprietario" />
+                                <field name="riferimento" />
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+                <notebook position="after">
+                    <group>
+                        <field name="altre_note"/>
+                    </group>
+                </notebook>
+                <field name="contatto_extra_ids" position="replace">
+                    <field name="contatto_extra_ids" nolabel="1">
+                        <list editable="top">
+                            <field name="name"/>
+                            <field name="tipo_id"/>
+                            <field name="phone"/>
+                            <field name="cellulare"/>
+                            <field name="email"/>
+                        </list>
+                    </field>
+                </field>
+            </field>
+        </record>
+
+        <!-- ARMATORI / PROPRIETARI -->
+        <record id="ey2_armatore_proprietario_action" model="ir.actions.act_window">
+            <field name="name">Armatori / Proprietari</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="context" eval="{'search_default_filter_armatore_proprietario': 1,
+             'default_armatore_proprietario': 1}"/>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="filter" eval="True"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clicca quì per inserire nuovi Armatori / Proprietari.
+                </p>
+            </field>
+        </record>
+        <menuitem id="ey2_armatore_proprietario_menu" name="Armatori / Proprietari"
+                  parent="ey.menu_ey_marittimi"
+                  action="ey2_armatore_proprietario_action"
+                  sequence="15"/>
+
+        <!-- ALTRI SOGGETTI -->
+        <record id="ey2_altri_soggetti_action" model="ir.actions.act_window">
+            <field name="name">Altri soggetti</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="context" eval="{'search_default_filter_altri_soggetti': 1, 'default_altri_soggetti': 1}"/>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="filter" eval="True"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clicca quì per inserire nuovi soggetti.
+                </p>
+            </field>
+        </record>
+        <menuitem id="ey2_altri_soggetti_menu" name="Altri soggetti"
+                  parent="ey.menu_ey_marittimi"
+                  action="ey2_altri_soggetti_action"
+                  sequence="16"/>
+
+        <!-- ANAGRAFICHE VARIE -->
+        <record id="ey2_anagrafiche_varie_action" model="ir.actions.act_window">
+            <field name="name">Anagrafiche varie</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="context" eval="{'default_customer': 1}"/>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="filter" eval="True"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Clicca quì per inserire nuove anagrafiche.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="ey2_anagrafiche_varie_menu" name="Archivio anagrafiche"
+                  parent="ey.menu_ey_marittimi"
+                  action="ey2_anagrafiche_varie_action"
+                  sequence="1"/>
+
+    </data>
+</openerp>

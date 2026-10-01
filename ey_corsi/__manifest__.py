@@ -1,0 +1,42 @@
+# -*- coding: utf-8 -*-
+{
+    'name': 'ey_corsi',
+    'version': '19.0.1.0.0',
+    'summary': 'E-Yacht — Corsi ed esami per il personale marittimo',
+    'category': 'Uncategorized',
+    'author': 'Progresso SRL',
+    'website': '#',
+    'depends': ['base', 'account', 'ey_base'],
+    # NOTA: 'report_py3o' non serve più (sostituito da report QWeb, Step 12).
+    # 'account_financial_report' e 'l10n_it_vat_registries' (OCA) non sono
+    # installati su questa istanza: da riaggiungere quando disponibili.
+    # 'depends': ['base', 'account', 'ey_base', 'account_financial_report', 'l10n_it_vat_registries'],
+    'data': [
+        'security/security.xml',
+        'security/ir.model.access.csv',
+        'views/lookup_views.xml',
+        'views/res_partner/res_partner_view.xml',
+        'views/agenda_marittimo/agenda_marittimo_view.xml',
+        'views/corsi/template_corso_view.xml',
+        'views/esami/template_esame_view.xml',
+        'views/corsi/corso_view.xml',
+        'views/corsi/iscrizione_corso_view.xml',
+        'views/corsi/preiscrizione_corso_view.xml',
+        'views/esami/esame_view.xml',
+        'views/esami/iscrizione_esame_view.xml',
+        'views/esami/preiscrizione_esame_view.xml',
+        'views/wizards/wiz_compute_corso_view.xml',
+        'views/wizards/wiz_compute_esame_view.xml',
+        'views/report/attestato_frequenza_report.xml',
+        'views/report/certificato_esame_report.xml',
+        'views/certificati_attestati/attestato_frequenza_view.xml',
+        'views/certificati_attestati/certificato_esame_view.xml',
+        'views/certificati_attestati/certificato_view.xml',
+        'data/agenda_categorie.xml',
+        'data/menuitems.xml',
+    ],
+    'license': 'AGPL-3',
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+}

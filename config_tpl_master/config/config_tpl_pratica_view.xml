@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <!-- tree view -->
+        <record id="config_tpl_pratica_tree_view" model="ir.ui.view">
+            <field name="name">config_tpl.pratica.tree</field>
+            <field name="model">config_tpl.pratica</field>
+            <field name="arch" type="xml">
+                <list string="Pratiche">
+                    <field name="name" />
+                    <field name="tpl_id" />
+                    <field name="partner_id" />
+                </list>
+            </field>
+        </record>
+
+        <!-- form view -->
+        <record id="config_tpl_pratica_form_view" model="ir.ui.view">
+            <field name="name">config_tpl.pratica.form</field>
+            <field name="model">config_tpl.pratica</field>
+            <field eval="7" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Pratiche" version="7.0">
+                    <sheet>
+                        <div class="oe_title" style="width: 80%">
+                            <h1>
+                                <field name="created" invisible="1" />
+                                <field name="name" placeholder="Nome" />
+                            </h1>
+                        </div>
+                        <notebook>
+                            <page string="Generale">
+                                <group>
+                                    <group name="info_pratica_sx">
+                                        <field name="tpl_id" placeholder="Nome"
+                                            attrs="{'readonly': [('created', '=', True)]}"
+                                            options="{'no_create': True, 'no_open': True, 'limit': 1000}"
+                                            domain="[('tipo_template', '=', 'Navi')]"/>
+                                    </group>
+                                    <group name="info_pratica_dx">
+                                        <field name="partner_id" attrs="{'readonly': [('created', '=', True)]}"/>
+                                    </group>
+                                </group>
+                                <group string="Reports">
+                                    <field name="report_ids" nolabel="1" readonly="1">
+                                        <list>
+                                            <field name="report_id" />
+                                            <field name="priority" />
+                                            <button name="button_stampa_pratica"  string="Stampa pratica"
+					                            class="oe_highlight" type="object" />
+                                        </list>
+                                    </field>
+                                </group>
+                                <group string="Chiavi">
+                                    <field name="chiave_ids" nolabel="1">
+                                        <list editable="bottom" create="false" delete="false">
+                                            <field name="chiave" readonly="1"/>
+                                            <field name="valore" attrs="{'readonly': [('is_valore', '=', False)]}"/>
+                                            <field name="is_valore" invisible="1" />
+                                        </list>
+                                    </field>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>

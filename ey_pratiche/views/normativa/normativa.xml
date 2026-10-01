@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="ey_pratiche_normativa_tree_view" model="ir.ui.view">
+            <field name="name">ey_pratiche.normativa.tree</field>
+            <field name="model">ey_pratiche.normativa</field>
+            <field name="arch" type="xml">
+                <list string="Normative">
+                    <field name="ufficio_emissione_id"/>
+                    <field name="natura_id"/>
+                    <field name="numero_provvedimento"/>
+                    <field name="data_provvedimento"/>
+                    <field name="ambito_id"/>
+                    <field name="argomento_id"/>
+                    <!-- <field name="categoria_id"/> -->
+                    <field name="testo_descrittivo"/>
+                    <field name="write_date" string="Ultimo aggiornamento"/>
+                    <field name="attivo"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="ey_pratiche_normativa_search_view" model="ir.ui.view">
+            <field name="name">ey_pratiche.normativa.search</field>
+            <field name="model">ey_pratiche.normativa</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="numero_provvedimento"/>
+                    <field name="testo_descrittivo"/>
+                    <filter name="normative_attive" string="Attive" domain="[('attivo','=', True)]"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- <record id="ey_pratiche_pratica_nave_search_view" model="ir.ui.view">
+            <field name="name">ey_pratiche.pratica_nave.select</field>
+            <field name="model">ey_pratiche.pratica_nave</field>
+            <field name="arch" type="xml">
+                <search string="Search...">
+                    <field name="tpl_id"/>
+                    <field name="partner_id"/>
+                    <field name="partner_riferimento_id"/>
+                    <field name="tipo_pratica"/>
+                    <field name="riferimento_pratica"/>
+                    <field name="riferimento_nave"/>
+                    <field name="tipo_registro_nave"/>
+                    <field name="numero_registro_nave"/>
+                    <field name="porto_nave"/>
+                    <field name="bandiera_nave"/>
+                    <field name="tipo_documento_id"/>
+
+                    <group string="Filtri predefiniti">
+                        <filter name="ey_pratiche_pratiche_viosibili" string="Visibili"
+                                domain="[('state', 'not in', ['v-Pagata', 'z-Annullata'])]"/>
+                        <filter name="ey_pratiche_pratiche_my" string="My" domain="[('user_id','=',uid)]"/>
+                        <filter name="ey_pratiche_pratiche_my_and_visibili" string="My &amp; Visibili"
+                                domain="[('user_id','=',uid), ('state', 'not in', ['v-Pagata', 'z-Annullata'])]"/>
+                    </group>
+
+                    <group string="Group by...">
+                        <filter name="group_ey_pratiche_pratica_nave_nave" string="Nave" icon="terp-partner"
+                                context="{'group_by':'partner_id'}"/>
+                        <filter name="group_ey_pratiche_pratica_nave_tpl" string="Template" icon="terp-partner"
+                                context="{'group_by':'tpl_id'}"/>
+                        <filter name="group_ey_pratiche_pratica_nave_marittimo" string="Marittimo" icon="terp-partner"
+                                context="{'group_by':'partner_riferimento_id'}"/>
+                        <filter name="group_ey_pratiche_pratica_nave_tipo_pratica" string="Tipo pratica" icon="terp-partner"
+                                context="{'group_by':'tipo_pratica'}"/>
+                        <filter name="group_ey_pratiche_pratica_nave_state" string="Stato" icon="terp-partner"
+                                context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record> -->
+
+        <record id="ey_pratiche_normativa_form_view" model="ir.ui.view">
+            <field name="name">ey_pratiche.normativa.form</field>
+            <field name="model">ey_pratiche.normativa</field>
+            <field name="arch" type="xml">
+                <form string="Normativa" version="7.0">
+                    <sheet>
+                        <div class="oe_title" style="width: 80%">
+                            <h1>Nuova normativa</h1>
+                            <h1>
+                                <field name="id" invisible="1"/>
+                                <field name="name" placeholder="Nome"/>
+                            </h1>
+                        </div>
+                        <notebook>
+                            <page string="Generale">
+                                <group>
+                                    <group>
+                                        <field name="ambito_id"/>
+                                        <field name="data_provvedimento"/>
+                                        <field name="numero_provvedimento" style="width: 25%"/>
+                                        <field name="testo_descrittivo"/>
+                                        <field name="ufficio_emissione_id"/>
+                                    </group>
+                                    <group>                                     
+                                        <field name="argomento_id"/>
+                                        <field name="categoria_id"/>
+                                        <field name="natura_id"/>
+                                        <field name="attivo" />
+                                        <field name="write_date" readonly="1" string="Ultimo aggiornamento"/>
+                                    </group>
+                                </group>
+                                <group string="Allegati">
+                                    <field name="documento_ids" nolabel="1">
+                                        <list editable="bottom" default_order="evidenza desc">                                     
+                                            <field name="name"/>
+                                            <field name="document" widget="binary" filename="document_fname"/>
+                                            <field name="document_fname" invisible="1"/>
+                                         <field name="evidenza"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <group string="Normative collegate">
+                                    <field name="normative_collegate" options="{'no_create': True}"
+                                           domain="[('id', '!=', id)]" nolabel="1">
+                                        <list>
+                                            <field name="ambito_id" />
+                                            <field name="argomento_id"/>
+                                            <field name="natura_id" />
+                                            <field name="data_provvedimento" />
+                                            <field name="numero_provvedimento" />
+                                            <field name="testo_descrittivo" />
+                                        </list>
+                                    </field>
+                                </group>
+                                <group>
+                                    <field name="note"/>
+                                </group>
+                            </page>
+                            <page string="Info sito">
+                                <group>
+                                    <group>
+                                        <field name="pubblicato"/>
+                                        <field name="titolo_sito"/>
+                                    </group>
+                                    <group/>
+                                </group>
+                                <group>
+                                    <field name="descrizione_sito"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- action per creare un tpl -->
+        <record id="ey_pratiche_pratica_normativa_action" model="ir.actions.act_window">
+            <field name="name">Normative</field>
+            <field name="res_model">ey_pratiche.normativa</field>
+            <field name="context">{'search_default_normative_attive': 1}</field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <!--<record id="ey_pratiche_pratica_nave_tree_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="ey_pratiche_pratica_nave_tree_view"/>
+            <field name="act_window_id" ref="ey_pratiche_pratica_nave_action"/>
+        </record>
+        <record id="ey_pratiche_pratica_nave_form_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ey_pratiche_pratica_nave_form_view"/>
+            <field name="act_window_id" ref="ey_pratiche_pratica_nave_action"/>
+        </record> -->
+
+        <!--crea la voce del menu -->
+        <menuitem
+                id="ey_pratiche_pratica_normativa_menu" name="Normative"
+                parent="ey_pratiche.gestione_normative_menu"
+                action="ey_pratiche_pratica_normativa_action"
+                sequence="20"
+        />
+
+    </data>
+</odoo>

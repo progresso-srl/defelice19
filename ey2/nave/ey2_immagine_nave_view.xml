@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <!-- tree view -->
+        <record id="ey2_immagine_nave_tree_view" model="ir.ui.view">
+            <field name="name">ey2.immagine_nave.tree</field>
+            <field name="model">ey2.immagine_nave</field>
+            <field name="arch" type="xml">
+                <tree string="Immagini">
+                    <field name="descrizione" />
+                    <field name="image" filename="image_fname"/>
+                    <field name="image_fname" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!-- search view -->
+        <record id="ey2_immagine_nave_search_view" model="ir.ui.view">
+            <field name="name">ey2.immagine_nave.select</field>
+            <field name="model">ey2.immagine_nave</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="nave_id"/>
+                </search>
+            </field>
+        </record>
+
+
+        <!-- fporm view -->
+        <record id="ey2_immagine_nave_form_view" model="ir.ui.view">
+            <field name="name">ey2.immagine_nave.form</field>
+            <field name="model">ey2.immagine_nave</field>
+            <field eval="7" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Images" version="7.0">
+                    <sheet>
+                        <style>
+                            img {
+                                max-width: 828px;
+                            }
+                        </style>
+                        <notebook colspan="8">
+                            <page>
+                                <group>
+                                    <field name="descrizione" />
+                                </group>
+                                <group>
+                                    <field name="image" widget="image" nolabel="1" filename="image_fname"/>
+                                    <field name="image_fname" invisible="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="ey2_immagine_nave_action" model="ir.actions.act_window">
+            <field name="name">Immagini</field>
+            <field name="res_model">ey2.immagine_nave</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="filter" eval="True"/>
+            <field name="context" eval="{'search_default_open': True}"/>
+        </record>
+        <record id="ey2_immagine_nave_form_view2" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ey2_immagine_nave_form_view"/>
+            <field name="act_window_id" ref="ey2_immagine_nave_action"/>
+        </record>
+        <record id="ey2_immagine_nave_form_view1" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="ey2_immagine_nave_tree_view"/>
+            <field name="act_window_id" ref="ey2_immagine_nave_action"/>
+        </record>
+
+
+    </data>
+</openerp>

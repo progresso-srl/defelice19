@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- show more view previsionale -->
+        <record id="ey_contabilita_navi_spesa_previsionale_tree_view" model="ir.ui.view">
+            <field name="name">ey_contabilita_navi.spesa_previsionale.tree</field>
+            <field name="model">ey_contabilita_navi.spesa_previsionale</field>
+            <field name="arch" type="xml">
+                <list string="Previsionali">
+                    <field name="name"/>
+                    <field name="previsionale_id"/>
+                    <field name="tipo_id"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- show more view anticipi -->
+        <record id="ey_contabilita_navi_anticipi_armatore_tree_view" model="ir.ui.view">
+            <field name="name">ey_contabilita_navi.anticipi_armatore.tree</field>
+            <field name="model">ey_contabilita_navi.anticipi_armatore</field>
+            <field name="arch" type="xml">
+                <list string="Anticipi">
+                    <field name="name"/>
+                    <field name="data"/>
+                    <field name="previsionale_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="move_line_form" model="ir.ui.view">
+            <field name="name">ey_contabilita_navi.account.move.form.inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <group>
+                        <group style="width: 100%">
+                            <field name="collegamento_linea_spesa" widget="radio"/>
+                        </group>
+                        <group style="width: 100%" invisible="collegamento_linea_spesa != 'contabilita_nave'">
+                            <div string="Contabilita navi">
+                                <field name="spesa_previsionale_id" style="width: 30%" options="{'no_create': True, 'no_create_edit' : True}">
+                                    <attribute name="context">{'tree_view_ref': 'ey_contabilita_navi_spesa_previsionale_tree_view'}</attribute>
+                                </field>
+                                <button name="button_collega_linea_spesa_nave" string="Collega linea spesa" type="object" style="margin-left: 10px;" class="oe_edit_only"/>
+                            </div>
+                        </group>
+                        <group style="width: 100%" invisible="collegamento_linea_spesa != 'anticipi_armatore'">
+                            <div string="Contabilita navi">
+                                <field name="anticipi_armatore_id" style="width: 30%" options="{'no_create': True, 'no_create_edit' : True}">
+                                    <attribute name="context">{'tree_view_ref': 'ey_contabilita_navi_anticipi_armatore_tree_view'}</attribute>
+                                </field>
+                                <button name="button_collega_linea_spesa_armatore" string="Collega linea anticipo armatore" type="object" style="margin-left: 10px;" class="oe_edit_only"/>
+                            </div>
+                        </group>
+                    </group>
+                </xpath>
+                <!-- XPATH COMMENTATO: struttura vista parent cambiata in Odoo 19
+                <xpath expr="//field[@name='line_ids'] / list / field[@name='unita_id']" position="replace">
+                    <field name="unita_richiesta_linea" invisible="1"/>
+                    <field name="unita_id" required="unita_richiesta_linea == True"/>
+                </xpath>
+                -->
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <!-- tree view -->
+        <record id="ey2_pre_iscrizione_esame_tree_view" model="ir.ui.view">
+            <field name="name">ey2.pre_iscrizione_esame.tree</field>
+            <field name="model">ey2.pre_iscrizione_esame</field>
+            <field name="arch" type="xml">
+                <list string="Iscrizioni">
+                    <field name="template_id" />
+                    <field name="marittimo_id" />
+                    <field name="data_iscrizione" />
+                    <field name="prezzo_esame"/>
+                    <field name="esito" />
+                </list>
+            </field>
+        </record>
+
+
+        <!-- search view -->
+        <record id="ey2_pre_iscrizione_esame_search_view" model="ir.ui.view">
+            <field name="name">ey2.pre_iscrizione_esame.select</field>
+            <field name="model">ey2.pre_iscrizione_esame</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="template_id" />
+                    <field name="esame_id" />
+                    <field name="marittimo_id" />
+
+                    <filter name="epreiscrizioni_non_annullate" string="Non annullate"
+                            domain="[('esito','!=', 'Annullata')]"/>
+
+                    <!-- RAGGRUPPAMENTI -->
+                    <group string="Raggruppamenti">
+                        <filter name="group_iscrizione_esame_esame" string="Per esame" icon="terp-partner"
+                            context="{'group_by':'esame_id'}"/>
+                        <filter name="group_epre_iscrizione_template_id" string="Per template" icon="terp-partner"
+                            context="{'group_by':'template_id'}"/>
+                        <filter name="group_iscrizione_esame_marittimo" string="Per marittimo" icon="terp-partner"
+                            context="{'group_by':'marittimo_id'}"/>
+                        <filter name="group_iscrizione_esame_date" string="Mensile" icon="terp-partner"
+                                context="{'group_by':'data_iscrizione'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- form view -->
+        <record id="ey2_pre_iscrizione_esame_form_view" model="ir.ui.view">
+            <field name="name">ey2.pre_iscrizione_esame.form</field>
+            <field name="model">ey2.pre_iscrizione_esame</field>
+            <field eval="7" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Iscrizioni" version="7.0">
+                    <header>
+                        <button string="Stampa reg. form" name="stampa_reg_form"
+                                type="object" attrs="{'invisible': [('rf_compilato', '!=', False), ('corso_id', '!=', False)]}" />
+                        <button string="Crea iscrizione" name="crea_iscrizione"
+                                type="object" attrs="{'invisible': [('iscrizione_id', '!=', False), ('corso_id', '!=', False)]}" />
+                    </header>
+                    <sheet>
+                        <notebook>
+                            <page>
+                                <group>
+                                    <field name="created" invisible="1" />
+                                    <group>
+                                        <field name="template_id"
+                                               attrs="{'readonly': [('created', '=', True)]}" />
+                                        <field name="esame_id"
+                                                domain="[('data_esame', '&gt;=', (context_today()).strftime('%Y-%m-%d')), ('computed', '=', False)]"
+                                                attrs="{'readonly': [('template_id', '=', False)]}" options="{'no_create': True}" />
+                                        <field name="data_iscrizione" />
+                                        <field name="tipo_iscritto" />
+                                    </group>
+                                    <group>
+                                        <field name="marittimo_id" attrs="{'readonly': [('created', '=', True)]}"
+                                            context="{'default_anagrafica_ey': True}"/>
+                                        <field name="destinatario_id"
+                                                context="{'default_is_company': 1, 'default_customer': 1, 'default_supplier': 0}"
+                                                domain="[('customer', '=', True)]" />
+                                        <field name="prezzo_esame" />
+                                        <field name="prezzo_scontato" />
+                                    </group>
+                                </group>
+                                <group string="Documenti marittimo">
+                                    <field name="documento_ids" readonly="1" nolabel="1"/>
+                                </group>
+                                <group string="Registration form compilato">
+                                    <field name="rf_compilato" filename="rf_fname"/>
+                                    <field name="rf_fname" invisible="1"/>
+                                </group>
+                                <group>
+                                    <field name="iscrizione_id" readonly="1" />
+                                </group>
+                                <group string="Esito">
+                                    <field name="esito" />
+                                    <field name="note_esito" />
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- action per creare un iscrizione -->
+        <record id="ey2_pre_iscrizione_esame_action" model="ir.actions.act_window">
+            <field name="name">Iscrizioni</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ey2.pre_iscrizione_esame</field>
+            <field name="view_type">form</field>
+            <field name="filter" eval="True"/>
+            <field name="context">
+                {'search_default_epreiscrizioni_non_annullate': 1}
+            </field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <record id="ey2_pre_iscrizione_esame_tree_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="ey2_pre_iscrizione_esame_tree_view"/>
+            <field name="act_window_id" ref="ey2_pre_iscrizione_esame_action"/>
+        </record>
+        <record id="ey2_pre_iscrizione_esame_form_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ey2_pre_iscrizione_esame_form_view"/>
+            <field name="act_window_id" ref="ey2_pre_iscrizione_esame_action"/>
+        </record>
+
+        <!--crea la voce del menu -->
+        <menuitem
+                id="ey2_pre_iscrizione_esame_menu" name="Preiscrizioni agli esami"
+                parent="ey.menu_ey_esami"
+                action="ey2_pre_iscrizione_esame_action"
+                sequence="59"
+                />
+
+
+    </data>
+</openerp>

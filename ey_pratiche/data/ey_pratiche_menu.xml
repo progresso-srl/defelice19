@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+       
+        <menuitem
+        name="Configuratore pratiche"
+        id="ey_pratiche.configuratore_pratiche_menu"
+        sequence="11"
+        />
+        <!-- Configurazione pratiche -->
+        <menuitem
+        name="Configuratore pratiche"
+        parent="ey_pratiche.configuratore_pratiche_menu"
+        id="ey_pratiche.configuratore_pratiche_configuratore_pratiche_menu"
+        />
+
+
+        <menuitem
+            name="Gestione normative"
+            id="ey_pratiche.gestione_normative_menu"
+            sequence="12"
+        />
+        
+    </data>
+</odoo>

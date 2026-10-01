@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="report_general_ledger_ey_ledger_inherit" model="ir.ui.view">
+            <field name="name">general.ledger.inherit</field>
+            <field name="model">general.ledger.report.wizard</field>
+            <field name="inherit_id" ref="account_financial_report.general_ledger_wizard"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='other_filters']" position="inside">
+                    <label string=" " for="set_to_zero"/>
+                    <div>
+                        <field name="set_to_zero" nolabel="1" class="oe_inline"/>
+                        <label for="set_to_zero" class="oe_inline"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

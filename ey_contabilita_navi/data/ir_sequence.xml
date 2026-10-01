@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="sequence_ey_contabilita_navi_nome_contratto" model="ir.sequence">
+            <field name="name">Sequenziale contratto</field>
+            <field name="code">ey_contabilita_navi.nome_contratto</field>
+            <field name="prefix">GN/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+        </record>
+    </data>
+</odoo>

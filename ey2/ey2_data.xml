@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <!-- CANONE RAI -->
+        <record model="ey2.tipo_canone_rai" id="ey2_tcr_nessuno">
+            <field name="name">Nessuno</field>
+        </record>
+        <record model="ey2.tipo_canone_rai" id="ey2_tcr_tv">
+            <field name="name">TV</field>
+        </record>
+        <record model="ey2.tipo_canone_rai" id="ey2_tcr_radio">
+            <field name="name">Radio</field>
+        </record>
+        <record model="ey2.tipo_canone_rai" id="ey2_tcr_tv_radio">
+            <field name="name">TV e Radio</field>
+        </record>
+
+        <!-- LIMITI NAVIGAZIONE -->
+        <record model="ey2.limite_navigazione" id="ey2_ln_senza_limiti">
+            <field name="name">Senza limiti</field>
+        </record>
+        <record model="ey2.limite_navigazione" id="ey2_ln_entro_60">
+            <field name="name">Entro 60 miglia</field>
+        </record>
+        <record model="ey2.limite_navigazione" id="ey2_ln_entro_50">
+            <field name="name">Entro 50 miglia</field>
+        </record>
+        <record model="ey2.limite_navigazione" id="ey2_ln_entro_12">
+            <field name="name">Entro 12 miglia</field>
+        </record>
+        <record model="ey2.limite_navigazione" id="ey2_ln_entro_6">
+            <field name="name">Entro 6 miglia</field>
+        </record>
+        <record model="ey2.limite_navigazione" id="ey2_ln_entro_3">
+            <field name="name">Entro 3 miglia</field>
+        </record>
+        <record model="ey2.limite_navigazione" id="ey2_ln_short_range">
+            <field name="name">Short Range</field>
+        </record>
+
+        <!-- SOCIETÀ CONCESSIANRIA -->
+        <record model="ey2.societa_concessionaria" id="ey2_sc_cg_telemar">
+            <field name="name">CG Telemar</field>
+        </record>
+        <record model="ey2.societa_concessionaria" id="ey2_sc_team_italia">
+            <field name="name">Team Italia</field>
+        </record>
+
+        <!-- ENTI -->
+        <record model="ey2.ente_sorveglianza" id="ey2_ente_sorveglianza_rina">
+            <field name="name">RINA</field>
+        </record>
+        <record model="ey2.ente_sorveglianza" id="ey2_ente_sorveglianza_bureau">
+            <field name="name">Bureu Veritas</field>
+        </record>
+        <record model="ey2.ente_sorveglianza" id="ey2_ente_sorveglianza_giordano">
+            <field name="name">Istituoto Giordano</field>
+        </record>
+        <record model="ey2.ente_sorveglianza" id="ey2_ente_sorveglianza_dnvgl">
+            <field name="name">DNV-GL</field>
+        </record>
+
+        <!-- PORTO -->
+        <record model="ey2.porto" id="ey2_porto_viareggio">
+            <field name="name">Viareggio</field>
+        </record>
+        <record model="ey2.porto" id="ey2_porto_livorno">
+            <field name="name">Livorno</field>
+        </record>
+        <record model="ey2.porto" id="ey2_porto_genova">
+            <field name="name">Genova</field>
+        </record>
+        <record model="ey2.porto" id="ey2_porto_spezia">
+            <field name="name">La Spezia</field>
+        </record>
+
+        <!-- TIPO APPARATO ELETTRONICO -->
+        <record model="ey2.tipo_app_elett" id="ey2_tipo_app_elett_1">
+            <field name="name">Radiotelefono VHF</field>
+        </record>
+        <record model="ey2.tipo_app_elett" id="ey2_tipo_app_elett_2">
+            <field name="name">Radiotelefono VHF-DSC</field>
+        </record>
+        <record model="ey2.tipo_app_elett" id="ey2_tipo_app_elett_3">
+            <field name="name">Radiotelefono SSB</field>
+        </record>
+        <record model="ey2.tipo_app_elett" id="ey2_tipo_app_elett_4">
+            <field name="name">GMDSS</field>
+        </record>
+        <record model="ey2.tipo_app_elett" id="ey2_tipo_app_elett_5">
+            <field name="name">Radar</field>
+        </record>
+        <record model="ey2.tipo_app_elett" id="ey2_tipo_app_elett_6">
+            <field name="name">Radar Arpa</field>
+        </record>
+        <record model="ey2.tipo_app_elett" id="ey2_tipo_app_elett_7">
+            <field name="name">Pilota automatico</field>
+        </record>
+        <record model="ey2.tipo_app_elett" id="ey2_tipo_app_elett_8">
+            <field name="name">Navigatore satellitare</field>
+        </record>
+        <record model="ey2.tipo_app_elett" id="ey2_tipo_app_elett_9">
+            <field name="name">Ecosonda</field>
+        </record>
+
+        <!-- AGENDA NAVE -->
+        <record model="ey2.categoria_agenda_nave" id="ey2_agenda_scadenza_nave_cert">
+            <field name="name">Scadenza Certificato Nave</field>
+        </record>
+
+
+    </data>
+</openerp>

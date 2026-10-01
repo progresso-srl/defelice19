@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Macro helper: una list+form minimale per ogni lookup ──── -->
+
+    <record id="view_qualifica_list" model="ir.ui.view">
+        <field name="name">ey_corsi.qualifica.list</field>
+        <field name="model">ey_corsi.qualifica</field>
+        <field name="arch" type="xml">
+            <list string="Qualifiche" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_qualifica" model="ir.actions.act_window">
+        <field name="name">Qualifiche</field>
+        <field name="res_model">ey_corsi.qualifica</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_settore_list" model="ir.ui.view">
+        <field name="name">ey_corsi.settore.list</field>
+        <field name="model">ey_corsi.settore</field>
+        <field name="arch" type="xml">
+            <list string="Settori" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_settore" model="ir.actions.act_window">
+        <field name="name">Settori</field>
+        <field name="res_model">ey_corsi.settore</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_stato_civile_list" model="ir.ui.view">
+        <field name="name">ey_corsi.stato_civile.list</field>
+        <field name="model">ey_corsi.stato_civile</field>
+        <field name="arch" type="xml">
+            <list string="Stati civili" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_stato_civile" model="ir.actions.act_window">
+        <field name="name">Stati civili</field>
+        <field name="res_model">ey_corsi.stato_civile</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_luogo_nascita_list" model="ir.ui.view">
+        <field name="name">ey_corsi.luogo_nascita.list</field>
+        <field name="model">ey_corsi.luogo_nascita</field>
+        <field name="arch" type="xml">
+            <list string="Luoghi di nascita" editable="bottom">
+                <field name="city"/>
+                <field name="state_id"/>
+                <field name="country_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_luogo_nascita" model="ir.actions.act_window">
+        <field name="name">Luoghi di nascita</field>
+        <field name="res_model">ey_corsi.luogo_nascita</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_circuito_pagamento_list" model="ir.ui.view">
+        <field name="name">ey_corsi.circuito_pagamento.list</field>
+        <field name="model">ey_corsi.circuito_pagamento</field>
+        <field name="arch" type="xml">
+            <list string="Circuiti di pagamento" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_circuito_pagamento" model="ir.actions.act_window">
+        <field name="name">Circuiti di pagamento</field>
+        <field name="res_model">ey_corsi.circuito_pagamento</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_tipo_contatto_extra_list" model="ir.ui.view">
+        <field name="name">ey_corsi.tipo_contatto_extra.list</field>
+        <field name="model">ey_corsi.tipo_contatto_extra</field>
+        <field name="arch" type="xml">
+            <list string="Tipi contatto extra" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_tipo_contatto_extra" model="ir.actions.act_window">
+        <field name="name">Tipi contatto extra</field>
+        <field name="res_model">ey_corsi.tipo_contatto_extra</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_tipo_documento_list" model="ir.ui.view">
+        <field name="name">ey_corsi.tipo_documento.list</field>
+        <field name="model">ey_corsi.tipo_documento</field>
+        <field name="arch" type="xml">
+            <list string="Tipi documento" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_tipo_documento" model="ir.actions.act_window">
+        <field name="name">Tipi documento</field>
+        <field name="res_model">ey_corsi.tipo_documento</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_ente_documenti_list" model="ir.ui.view">
+        <field name="name">ey_corsi.ente_documenti.list</field>
+        <field name="model">ey_corsi.ente_documenti</field>
+        <field name="arch" type="xml">
+            <list string="Enti rilascio documenti" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_ente_documenti" model="ir.actions.act_window">
+        <field name="name">Enti rilascio documenti</field>
+        <field name="res_model">ey_corsi.ente_documenti</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_ente_certificati_list" model="ir.ui.view">
+        <field name="name">ey_corsi.ente_certificati.list</field>
+        <field name="model">ey_corsi.ente_certificati</field>
+        <field name="arch" type="xml">
+            <list string="Enti certificatori" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_ente_certificati" model="ir.actions.act_window">
+        <field name="name">Enti certificatori</field>
+        <field name="res_model">ey_corsi.ente_certificati</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_descrizione_certificato_list" model="ir.ui.view">
+        <field name="name">ey_corsi.descrizione_certificato.list</field>
+        <field name="model">ey_corsi.descrizione_certificato</field>
+        <field name="arch" type="xml">
+            <list string="Descrizioni certificato" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_descrizione_certificato" model="ir.actions.act_window">
+        <field name="name">Descrizioni certificato</field>
+        <field name="res_model">ey_corsi.descrizione_certificato</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_ente_corsi_list" model="ir.ui.view">
+        <field name="name">ey_corsi.ente_corsi.list</field>
+        <field name="model">ey_corsi.ente_corsi</field>
+        <field name="arch" type="xml">
+            <list string="Enti organizzatori corsi" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_ente_corsi" model="ir.actions.act_window">
+        <field name="name">Enti organizzatori corsi</field>
+        <field name="res_model">ey_corsi.ente_corsi</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_sede_corso_list" model="ir.ui.view">
+        <field name="name">ey_corsi.sede_corso.list</field>
+        <field name="model">ey_corsi.sede_corso</field>
+        <field name="arch" type="xml">
+            <list string="Sedi corso" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_sede_corso" model="ir.actions.act_window">
+        <field name="name">Sedi corso</field>
+        <field name="res_model">ey_corsi.sede_corso</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_descrizione_costo_list" model="ir.ui.view">
+        <field name="name">ey_corsi.descrizione_costo.list</field>
+        <field name="model">ey_corsi.descrizione_costo</field>
+        <field name="arch" type="xml">
+            <list string="Descrizioni costo" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_descrizione_costo" model="ir.actions.act_window">
+        <field name="name">Descrizioni costo</field>
+        <field name="res_model">ey_corsi.descrizione_costo</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_tipo_documento_corso_list" model="ir.ui.view">
+        <field name="name">ey_corsi.tipo_documento_corso.list</field>
+        <field name="model">ey_corsi.tipo_documento_corso</field>
+        <field name="arch" type="xml">
+            <list string="Tipi documento corso" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_tipo_documento_corso" model="ir.actions.act_window">
+        <field name="name">Tipi documento corso</field>
+        <field name="res_model">ey_corsi.tipo_documento_corso</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_tipo_documento_esame_list" model="ir.ui.view">
+        <field name="name">ey_corsi.tipo_documento_esame.list</field>
+        <field name="model">ey_corsi.tipo_documento_esame</field>
+        <field name="arch" type="xml">
+            <list string="Tipi documento esame" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_tipo_documento_esame" model="ir.actions.act_window">
+        <field name="name">Tipi documento esame</field>
+        <field name="res_model">ey_corsi.tipo_documento_esame</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_carriera_tpl_corso_list" model="ir.ui.view">
+        <field name="name">ey_corsi.carriera_tpl_corso.list</field>
+        <field name="model">ey_corsi.carriera_tpl_corso</field>
+        <field name="arch" type="xml">
+            <list string="Carriere (template corso)" editable="bottom"><field name="name"/></list>
+        </field>
+    </record>
+    <record id="view_carriera_tpl_corso_form" model="ir.ui.view">
+        <field name="name">ey_corsi.carriera_tpl_corso.form</field>
+        <field name="model">ey_corsi.carriera_tpl_corso</field>
+        <field name="arch" type="xml">
+            <form string="Carriera">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                    <field name="percorso_formativo_ids">
+                        <list editable="bottom">
+                            <field name="name"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_ey_corsi_carriera_tpl_corso" model="ir.actions.act_window">
+        <field name="name">Carriere (template corso)</field>
+        <field name="res_model">ey_corsi.carriera_tpl_corso</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_percorso_tpl_corso_list" model="ir.ui.view">
+        <field name="name">ey_corsi.percorso_tpl_corso.list</field>
+        <field name="model">ey_corsi.percorso_tpl_corso</field>
+        <field name="arch" type="xml">
+            <list string="Percorsi formativi (template corso)" editable="bottom">
+                <field name="name"/>
+                <field name="carriera_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_ey_corsi_percorso_tpl_corso" model="ir.actions.act_window">
+        <field name="name">Percorsi formativi (template corso)</field>
+        <field name="res_model">ey_corsi.percorso_tpl_corso</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

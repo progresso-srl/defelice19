@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="ir_cron_ey2_pratica_nave_action" model="ir.cron">
+            <field name="name">Alert pratica nave</field>
+            <field name="interval_number">12</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model">ey2.pratica_nave</field>
+            <field name="function">scheduler_alert_pratica</field>
+            <field name="args">()</field>
+        </record>
+
+        <record id="ir_cron_ey2_pratica_soggetto_action" model="ir.cron">
+            <field name="name">Alert pratica soggetto</field>
+            <field name="interval_number">12</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="True"/>
+            <field name="model">ey2.pratica_soggetto</field>
+            <field name="function">scheduler_alert_pratica</field>
+            <field name="args">()</field>
+        </record>
+
+    </data>
+</openerp>

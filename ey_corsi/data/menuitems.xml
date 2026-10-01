@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Gestione certificati/attestati -->
+    <menuitem id="menu_ey_corsi_certificati_attestati"
+              name="Gestione certificati/attestati"
+              parent="ey_base.menu_ey_base_root"
+              sequence="32"/>
+
+    <menuitem id="menu_ey_corsi_attestato_frequenza"
+              name="Attestati di frequenza"
+              parent="menu_ey_corsi_certificati_attestati"
+              action="action_ey_corsi_attestato_frequenza"
+              sequence="10"/>
+
+    <menuitem id="menu_ey_corsi_certificato_esame"
+              name="Certificati interni"
+              parent="menu_ey_corsi_certificati_attestati"
+              action="action_ey_corsi_certificato_esame"
+              sequence="20"/>
+
+    <menuitem id="menu_ey_corsi_certificato"
+              name="Certificati esterni"
+              parent="menu_ey_corsi_certificati_attestati"
+              action="action_ey_corsi_certificato"
+              sequence="250"/>
+
+    <!-- Soggetti -->
+    <menuitem id="menu_ey_corsi_soggetti"
+              name="Soggetti"
+              parent="ey_base.menu_ey_base_root"
+              sequence="15"/>
+
+    <menuitem id="menu_ey_corsi_marittimi"
+              name="Marittimi"
+              parent="menu_ey_corsi_soggetti"
+              action="action_ey_corsi_marittimi"
+              sequence="10"/>
+
+    <menuitem id="menu_ey_corsi_personale_docente"
+              name="Personale docente"
+              parent="menu_ey_corsi_soggetti"
+              action="action_ey_corsi_personale_docente"
+              sequence="40"/>
+
+    <!-- Gestione corsi -->
+    <menuitem id="menu_ey_corsi_gestione_corsi"
+              name="Gestione corsi"
+              parent="ey_base.menu_ey_base_root"
+              sequence="30"/>
+
+    <menuitem id="menu_ey_corsi_template_corso"
+              name="Template corsi"
+              parent="menu_ey_corsi_gestione_corsi"
+              action="action_ey_corsi_template_corso"
+              sequence="10"
+              groups="group_ey_corsi_manager"/>
+
+    <menuitem id="menu_ey_corsi_corso"
+              name="Corsi"
+              parent="menu_ey_corsi_gestione_corsi"
+              action="action_ey_corsi_corso"
+              sequence="20"/>
+
+    <menuitem id="menu_ey_corsi_pre_iscrizione"
+              name="Preiscrizioni ai corsi"
+              parent="menu_ey_corsi_gestione_corsi"
+              action="action_ey_corsi_pre_iscrizione"
+              sequence="29"/>
+
+    <menuitem id="menu_ey_corsi_iscrizione"
+              name="Iscrizioni ai corsi"
+              parent="menu_ey_corsi_gestione_corsi"
+              action="action_ey_corsi_iscrizione"
+              sequence="30"/>
+
+    <!-- Gestione esami -->
+    <menuitem id="menu_ey_corsi_gestione_esami"
+              name="Gestione esami"
+              parent="ey_base.menu_ey_base_root"
+              sequence="35"/>
+
+    <menuitem id="menu_ey_corsi_template_esame"
+              name="Template esami"
+              parent="menu_ey_corsi_gestione_esami"
+              action="action_ey_corsi_template_esame"
+              sequence="10"
+              groups="group_ey_corsi_manager"/>
+
+    <menuitem id="menu_ey_corsi_esame"
+              name="Esami"
+              parent="menu_ey_corsi_gestione_esami"
+              action="action_ey_corsi_esame"
+              sequence="50"/>
+
+    <menuitem id="menu_ey_corsi_pre_iscrizione_esame"
+              name="Preiscrizioni agli esami"
+              parent="menu_ey_corsi_gestione_esami"
+              action="action_ey_corsi_pre_iscrizione_esame"
+              sequence="59"/>
+
+    <menuitem id="menu_ey_corsi_iscrizione_esame"
+              name="Iscrizioni a esami"
+              parent="menu_ey_corsi_gestione_esami"
+              action="action_ey_corsi_iscrizione_esame"
+              sequence="60"/>
+
+    <!-- Agenda: v12 aggancia "Agenda marittimo" come figlio diretto del menu condiviso
+         "Agenda scadenze" di ey_base (non ha un proprio menu top-level "Agenda marittimi"). -->
+    <menuitem id="menu_ey_corsi_agenda_marittimo"
+              name="Agenda marittimo"
+              parent="ey_base.menu_ey_base_agenda"
+              action="action_ey_corsi_agenda_marittimo"
+              sequence="15"/>
+
+    <!-- NON portato: in v12 le tabelle di lookup (qualifica, settore, stato_civile,
+         luogo_nascita, circuito_pagamento, tipo_contatto_extra, tipo_documento,
+         ente_documenti, ente_certificati, descrizione_certificato, ente_corsi,
+         sede_corso, descrizione_costo, tipo_documento_corso/esame, carriera/percorso
+         tpl_corso) non hanno nessun menu né vista dedicata: si gestiscono solo
+         tramite i popup "Crea e modifica" sui campi Many2one che le referenziano.
+         Le viste/azioni restano definite in views/lookup_views.xml per quell'uso,
+         ma senza menu proprio, per restare fedeli a v12. -->
+
+</odoo>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="ey2_previsionale_nave_tree_view" model="ir.ui.view">
+            <field name="name">ey2.previsionale_nave.tree</field>
+            <field name="model">ey2.previsionale_nave</field>
+            <field name="arch" type="xml">
+                <tree string="Previsionali" create="false">
+                    <field name="contratto_id" />
+                    <field name="mese_inizio"/>
+                    <field name="anno_inizio"/>
+                    <field name="currency_id" invisible="1" />
+                    <field name="totale_richiesto" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    <field name="totale_speso" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    <field name="bilancio" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ey2_previsionale_nave_search_view" model="ir.ui.view">
+            <field name="name">ey2.previsionale_nave.select</field>
+            <field name="model">ey2.previsionale_nave</field>
+            <field name="arch" type="xml">
+                <search string="Search...">
+                    <field name="contratto_id"/>
+
+                    <filter name="ey2_previs_nav_attivi" string="Contratti attivi"
+                            domain="[('contratto_id.attivo','=', True)]"/>
+                    <filter name="ey2_previs_nav_non_attivi" string="Contratti non attivi"
+                            domain="[('attivo','=', False)]"/>
+
+                    <group string="Group by...">
+                        <filter name="ey2_previs_nav_group_by_contratto" string="Contratto"
+                                icon="terp-go-home" context="{'group_by': 'contratto_id'}"/>
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+        <record id="ey2_previsionale_nave_form_view" model="ir.ui.view">
+            <field name="name">ey2.previsionale_nave.form</field>
+            <field name="model">ey2.previsionale_nave</field>
+            <field name="arch" type="xml">
+                <form string="Previsionale" version="7.0" create="false">
+                    <header>
+                        <button string="Previsionale"
+                                attrs="{'invisible': ['|', ('state', '=', 'Previsionale'), '|', ('state', '=', 'Chiuso'), ('id', '=', False)]}"
+                                class="oe_edit_only" name="stato_previsionale" type="object"/>
+                        <button string="Consolidato"
+                                attrs="{'invisible': ['|', ('state', '=', 'Consolidato'), ('id', '=', False)]}"
+                                class="oe_edit_only" name="stato_consolidato" type="object"/>
+                        <button string="Chiuso"
+                                attrs= "{'invisible': ['|', ('state', '=', 'Chiuso'), '|', ('state', '=', 'Previsionale'), ('id', '=', False)]}"
+                                class="oe_edit_only" name="stato_chiuso" type="object"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title" style="width: 80%">
+                            <h1 attrs="{'invisible': [('id', '!=', False)]}">Nuovo previsionale</h1>
+                            <h1>
+                                <field name="id" invisible="1"/>
+                                <field name="name" placeholder="Nome"
+                                       attrs="{'invisible': [('id', '=', False)]}"/>
+                            </h1>
+                            <h4>
+                                <field name="contratto_id" placeholder="Contratto" readonly="1"/>
+                            </h4>
+                        </div>
+                        <group string="Dati previsionale">
+                            <group>
+                                <field name="mese_inizio"
+                                       attrs="{'readonly': [('id', '!=', False)]}"/>
+                                <field name="totale_richiesto" widget='monetary' options="{'currency_field': 'currency_id'}" />
+                                <field name="totale_speso" widget='monetary' options="{'currency_field': 'currency_id'}" />
+                            </group>
+                            <group>
+                                <field name="anno_inizio"
+                                       attrs="{'readonly': [('id', '!=', False)]}"/>
+                                <field name="durata_id" readonly="1"/>
+                                <field name="currency_id" readonly="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group class="oe_subtotal_footer" colspan="2" name="sale_total">
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="bilancio"/>
+                                </div>
+                                <field name="bilancio" string="Bilancio previsionale" nolabel="1"
+                                       class="oe_subtotal_footer_separator"
+                                       widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                            </group>
+                            <group/>
+                        </group>
+                        <group string="Spese">
+                            <field name="spesa_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="tipo_id"/>
+                                    <field name="name"/>
+                                    <field name="previsionale_id" invisible="1" />
+                                    <field name="previsto" widget='monetary' options="{'currency_field': 'previsionale_id.currency_id'}"/>
+                                    <field name="effettivo" widget='monetary' options="{'currency_field': 'previsionale_id.currency_id'}"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- action per creare un tpl -->
+        <record id="ey2_previsionale_nave_action" model="ir.actions.act_window">
+            <field name="name">Previsionali</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ey2.previsionale_nave</field>
+            <field name="context">{'search_default_ey2_previs_nav_group_by_contratto': 1}</field>
+            <field name="view_type">form</field>
+            <field name="filter" eval="True"/>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="ey2_previsionale_nave_tree_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="ey2_previsionale_nave_tree_view"/>
+            <field name="act_window_id" ref="ey2_previsionale_nave_action"/>
+        </record>
+        <record id="ey2_previsionale_nave_form_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ey2_previsionale_nave_form_view"/>
+            <field name="act_window_id" ref="ey2_previsionale_nave_action"/>
+        </record>
+
+        <!--crea la voce del menu -->
+        <menuitem
+                id="ey2_previsionale_nave_menu" name="Previsionali"
+                parent="menu_ey2_contratti_saldo_navi"
+                action="ey2_previsionale_nave_action"
+                sequence="20"
+        />
+
+    </data>
+</openerp>

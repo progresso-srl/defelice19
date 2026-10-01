@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <!-- form view -->
+        <record id="ey_template_corso_form_view" model="ir.ui.view">
+            <field name="name">ey.template_corso.form.inherit</field>
+            <field name="model">ey.template_corso</field>
+            <field name="inherit_id" ref="ey.ey_template_corso_form_view"/>
+            <field eval="7" name="priority"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Info sito">
+                        <group string="Percorsi formativi">
+                            <field name="percorsi_formativi" nolabel="1">
+                                <list>
+                                    <field name="name" />
+                                    <field name="carriera_id" />
+                                </list>
+                            </field>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="titolo_corso" />
+                                <field name="corso_int_est" />
+                            </group>
+                            <group>
+                                <field name="descrizione_corso" />
+                                <field name="pubblicato" />
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+    </data>
+</openerp>

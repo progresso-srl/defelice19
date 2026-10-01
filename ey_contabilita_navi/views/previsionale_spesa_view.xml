@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <!-- form view -->
+        <record id="ey_contabilita_navi_spesa_previsionale_form_view" model="ir.ui.view">
+            <field name="name">ey_contabilita_navi.spesa_previsionale.form</field>
+            <field name="model">ey_contabilita_navi.spesa_previsionale</field>
+            <field name="arch" type="xml">
+                <form string="Previsionale" create="false">
+                    <sheet>
+                        <group string="Dati spesa">
+                            <field name="currency_id" invisible="1" />
+                            <group>
+                                <field name="previsionale_id" />
+                            </group>
+                            <group>
+                                <field name="name" />
+                            </group>
+                            <group>
+                                <field name="tipo_id" />
+                                <field name="confermata" />
+                            </group>
+                            <group>
+                                <field name="previsto" />
+                                <field name="effettivo" />
+                            </group>
+                        </group>
+
+                        <group string="Parte contabile"
+                            invisible="account_move_id == False">
+                            <field name="account_move_id" readonly="1" />
+                            <field name="status_account" readonly="1" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

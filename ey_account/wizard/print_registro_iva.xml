@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	
+		<record id="wizard_registro_iva" model="ir.ui.view">
+			<field name="name">Registro IVA</field>
+            <field name="model">wizard.registro.iva</field>
+            <field name="inherit_id" ref="l10n_it_vat_registries.wizard_registro_iva"/>
+			<field name="arch" type="xml">
+				
+				<xpath expr="//button[@string='Print']" position="replace">
+                    <button string="Print" name="print_registro_2" type="object" class="oe_highlight"/>
+                </xpath>
+					
+			</field>
+		</record>
+	
+	
+	</data>
+</openerp>

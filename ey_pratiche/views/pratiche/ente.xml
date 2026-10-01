@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>       
+
+        
+        <record id="ey_pratiche_ente_tree_view" model="ir.ui.view">
+            <field name="name">ey_pratiche.ente.tree</field>
+            <field name="model">ey_pratiche.ente</field>
+            <field name="arch" type="xml">
+                <list string="Enti">
+                    <field name="denominazione"/>
+                    <field name="sede_id"/>
+                    <field name="ufficio_id"/>
+                    <field name="phone" />
+                    <field name="email"/>
+                </list>
+            </field>
+        </record>
+      
+        
+        <record id="ey_pratiche_ente_search_view" model="ir.ui.view">
+            <field name="name">ey_pratiche.ente.search</field>
+            <field name="model">ey_pratiche.ente</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="denominazione"/>
+                    <field name="sede_id"/>
+                    <field name="ufficio_id"/>
+                    <field name="fiscalcode" />
+                </search>
+            </field>
+        </record> 
+
+       <record id="ey_pratiche_ente_form_view" model="ir.ui.view">
+            <field name="name">ey_pratiche.ente.form</field>
+            <field name="model">ey_pratiche.ente</field>
+            <field name="arch" type="xml">
+                <form string="Ente">
+                    <sheet>
+                        <!-- <notebook>
+                            <page string="Generale"> -->
+                                <group>
+                                    <group>
+                                        <field name="denominazione"/>
+                                        <field name="sede_id" options="{'no_quick_create':True}"/>
+                                        <field name="ufficio_id" options="{'no_quick_create':True}"/>
+                                        <field name="fiscalcode" />
+                                    </group>
+                                    <group>
+                                        <field name="contatto" />
+                                        <field name="email" />
+                                        <field name="phone"/>
+                                        <field name="fax" />
+                                    </group>
+                                </group>
+                                <group >
+                                    <group>
+                                    <label for="street" string="Indirizzo"/>
+                                    <div>
+                                        <field name="street" placeholder="Indirizzo..." />
+                                        <field name="street2" placeholder="Indirizzo 2..." />
+                                        <div class="address_format">
+                                            <field name="city" placeholder="City" style="width: 40%%" />
+                                            <field name="state_id" class="oe_no_button" placeholder="Provincia"
+                                                   style="width: 37%%" options='{"no_open": True, "no_create":True}' />
+                                            <field name="zip" placeholder="CAP" style="width: 20%%" />
+                                        </div>
+                                        <field name="country_id" placeholder="Nazione" class="oe_no_button"
+                                               options='{"no_open": True, "no_create": True}' />
+                                    </div>
+                                </group>
+                                </group>
+                            <!-- </page>
+                        </notebook> -->
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="ey_pratiche_ente_action" model="ir.actions.act_window">
+            <field name="name">Enti</field>
+            <field name="res_model">ey_pratiche.ente</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <menuitem
+                id="ey_pratiche_ente_menu" name="Enti"
+                parent="ey_pratiche.configuratore_pratiche_menu"
+                action="ey_pratiche_ente_action"
+                sequence="20"
+        />
+
+
+    </data>
+    
+</odoo>

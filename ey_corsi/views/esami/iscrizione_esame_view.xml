@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ey_corsi_iscrizione_esame_list_view" model="ir.ui.view">
+        <field name="name">ey_corsi.iscrizione_esame.list</field>
+        <field name="model">ey_corsi.iscrizione_esame</field>
+        <field name="arch" type="xml">
+            <list string="Iscrizioni">
+                <field name="esame_id"/>
+                <field name="marittimo_id"/>
+                <field name="data_iscrizione"/>
+                <field name="prezzo_esame"/>
+                <field name="importo_versato"/>
+                <field name="pagato"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ey_corsi_iscrizione_esame_search_view" model="ir.ui.view">
+        <field name="name">ey_corsi.iscrizione_esame.search</field>
+        <field name="model">ey_corsi.iscrizione_esame</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="esame_id"/>
+                <field name="marittimo_id"/>
+                <separator/>
+                <filter name="iscrizioni_pagate" string="Pagate" domain="[('pagato','=',True)]"/>
+                <filter name="iscrizioni_da_pagare" string="Da pagare" domain="[('pagato','=',False)]"/>
+                <group name="groupby">
+                    <filter name="group_iscrizione_esame_esame" string="Per esame" context="{'group_by':'esame_id'}"/>
+                    <filter name="group_iscrizione_esame_marittimo" string="Per marittimo" context="{'group_by':'marittimo_id'}"/>
+                    <filter name="group_iscrizione_esame_date" string="Mensile" context="{'group_by':'data_iscrizione'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- NON portati: "Stampa reg. form"/rf_compilato dipendevano dal report py3o
+         (STEP 12: sostituito da report QWeb). -->
+    <record id="ey_corsi_iscrizione_esame_form_view" model="ir.ui.view">
+        <field name="name">ey_corsi.iscrizione_esame.form</field>
+        <field name="model">ey_corsi.iscrizione_esame</field>
+        <field name="arch" type="xml">
+            <form string="Iscrizioni">
+                <header>
+                    <button name="genera_fattura" string="Genera fattura" type="object"
+                            invisible="pagato"/>
+                </header>
+                <sheet>
+                    <notebook>
+                        <page name="generale">
+                            <group>
+                                <field name="created" invisible="1"/>
+                                <group>
+                                    <field name="esame_id" readonly="created" options="{'no_create': True}"
+                                           domain="[('data_esame','&gt;=',context_today().strftime('%Y-%m-%d')), ('computed','=',False)]"/>
+                                    <field name="data_iscrizione"/>
+                                    <field name="tipo_iscritto"/>
+                                </group>
+                                <group>
+                                    <field name="marittimo_id" readonly="created" context="{'default_anagrafica_ey': True}"/>
+                                    <field name="destinatario_id" domain="[('customer_rank','&gt;',0)]"/>
+                                    <field name="prezzo_esame"/>
+                                    <field name="prezzo_scontato"/>
+                                </group>
+                            </group>
+                            <group string="Documenti marittimo">
+                                <field name="documento_ids" nolabel="1" readonly="1"/>
+                            </group>
+                            <group string="Fatture emesse">
+                                <field name="invoice_ids" nolabel="1" readonly="1">
+                                    <list>
+                                        <field name="invoice_date"/>
+                                        <field name="amount_untaxed"/>
+                                        <field name="amount_tax"/>
+                                        <field name="amount_total"/>
+                                        <field name="state"/>
+                                        <field name="amount_residual" string="Da avere" sum="Da avere"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="importo_versato"/>
+                                </group>
+                                <group>
+                                    <field name="pagamento_acconto"/>
+                                    <field name="pagato"/>
+                                </group>
+                            </group>
+                            <group string="Info fine esame">
+                                <group>
+                                    <field name="esame_superato" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ey_corsi_iscrizione_esame" model="ir.actions.act_window">
+        <field name="name">Iscrizioni a esami</field>
+        <field name="res_model">ey_corsi.iscrizione_esame</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="ey_corsi_iscrizione_esame_search_view"/>
+        <field name="context">{'search_default_group_iscrizione_esame_esame': 1}</field>
+    </record>
+
+</odoo>

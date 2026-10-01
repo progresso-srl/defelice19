@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_certificato_esame_document">
+        <t t-foreach="docs" t-as="doc">
+            <div class="page" style="text-align:center; padding-top:60px;">
+                <table width="100%">
+                    <tr>
+                        <td style="text-align:left; width:50%;">
+                            <img t-if="doc.esame_id.logo_azienda" t-att-src="image_data_uri(doc.esame_id.logo_azienda)" style="max-height:70px;"/>
+                        </td>
+                        <td style="text-align:right; width:50%;">
+                            <img t-if="doc.esame_id.logo_ente" t-att-src="image_data_uri(doc.esame_id.logo_ente)" style="max-height:70px;"/>
+                        </td>
+                    </tr>
+                </table>
+
+                <h1 style="margin-top:60px;">Certificato</h1>
+
+                <p style="font-size:14px; margin-top:40px;">Si attesta che</p>
+                <h2 t-field="doc.marittimo_id.name"/>
+                <p>
+                    nato/a a <span t-field="doc.marittimo_id.luogo_nascita_id"/>
+                    il <span t-field="doc.marittimo_id.data_nascita"/>
+                </p>
+
+                <p style="margin-top:30px;">ha superato con esito positivo l'esame</p>
+                <h3 t-field="doc.esame_id.template_id.name"/>
+                <p>
+                    sostenuto in data <span t-field="doc.esame_id.data_esame"/>
+                </p>
+
+                <table width="100%" style="margin-top:60px; font-size:12px;">
+                    <tr>
+                        <td style="text-align:left;">N. certificato: <span t-field="doc.numero_sequenza"/></td>
+                        <td style="text-align:right;">
+                            Rilasciato il <span t-field="doc.data_rilascio"/>
+                            — Scadenza <span t-field="doc.data_scadenza"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_certificato_esame">
+        <t t-call="web.html_container">
+            <t t-call="ey_corsi.report_certificato_esame_document"/>
+        </t>
+    </template>
+
+    <record id="action_report_certificato_esame" model="ir.actions.report">
+        <field name="name">Certificato esame</field>
+        <field name="model">ey_corsi.certificato_esame</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ey_corsi.report_certificato_esame</field>
+        <field name="report_file">ey_corsi.report_certificato_esame</field>
+        <field name="print_report_name">'Certificato - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_ey_corsi_certificato_esame"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

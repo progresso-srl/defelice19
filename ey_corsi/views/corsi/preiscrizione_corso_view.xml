@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ey_corsi_pre_iscrizione_list_view" model="ir.ui.view">
+        <field name="name">ey_corsi.pre_iscrizione.list</field>
+        <field name="model">ey_corsi.pre_iscrizione</field>
+        <field name="arch" type="xml">
+            <list string="Pre-Iscrizioni">
+                <field name="template_id"/>
+                <field name="marittimo_id"/>
+                <field name="data_iscrizione"/>
+                <field name="data_inizio_corso"/>
+                <field name="data_fine_corso"/>
+                <field name="prezzo_corso"/>
+                <field name="esito"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- NON portati: in v12 i filtri "iscrizioni_pagate"/"iscrizioni_da_pagare" referenziano
+         un campo "pagato" che non esiste (mai esistito) su ey_corsi.pre_iscrizione: sono
+         filtri rotti già in v12, non riportati qui. -->
+    <record id="ey_corsi_pre_iscrizione_search_view" model="ir.ui.view">
+        <field name="name">ey_corsi.pre_iscrizione.search</field>
+        <field name="model">ey_corsi.pre_iscrizione</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="template_id"/>
+                <field name="corso_id"/>
+                <field name="marittimo_id"/>
+                <filter name="preiscrizioni_non_annullate" string="Non annullate" domain="[('esito','!=','annullata')]"/>
+                <separator/>
+                <filter name="pre_iscrizioni_corsi_attivi" string="Corsi attivi"
+                        domain="[('data_inizio_corso','&lt;=',context_today().strftime('%Y-%m-%d')),
+                                 ('data_fine_corso','&gt;=',context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="pre_iscrizioni_corsi_terminati" string="Corsi terminati"
+                        domain="[('data_fine_corso','&lt;=',context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="pre_iscrizioni_corsi_futuri" string="Corsi futuri"
+                        domain="[('data_inizio_corso','&gt;=',context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="pre_iscrizioni_corsi_attivi_o_futuri" string="Corsi attivi o futuri"
+                        domain="['|',
+                                 '&amp;', ('data_inizio_corso','&lt;=',context_today().strftime('%Y-%m-%d')), ('data_fine_corso','&gt;=',context_today().strftime('%Y-%m-%d')),
+                                 ('data_inizio_corso','&gt;=',context_today().strftime('%Y-%m-%d'))]"/>
+                <group name="groupby">
+                    <filter name="group_pre_iscrizione_corso" string="Per corso" context="{'group_by':'corso_id'}"/>
+                    <filter name="group_pre_iscrizione_template_id" string="Per template" context="{'group_by':'template_id'}"/>
+                    <filter name="group_pre_iscrizione_marittimo" string="Per marittimo" context="{'group_by':'marittimo_id'}"/>
+                    <filter name="group_pre_iscrizione_date" string="Mensile" context="{'group_by':'data_iscrizione'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- NON portato: "Stampa reg. form"/rf_compilato dipendeva dal report py3o
+         (STEP 12: sostituito da report QWeb). -->
+    <record id="ey_corsi_pre_iscrizione_form_view" model="ir.ui.view">
+        <field name="name">ey_corsi.pre_iscrizione.form</field>
+        <field name="model">ey_corsi.pre_iscrizione</field>
+        <field name="arch" type="xml">
+            <form string="Pre-Iscrizioni">
+                <header>
+                    <button name="crea_iscrizione" string="Crea iscrizione" type="object"
+                            invisible="iscrizione_id"/>
+                </header>
+                <sheet>
+                    <notebook>
+                        <page name="generale">
+                            <group>
+                                <field name="created" invisible="1"/>
+                                <group>
+                                    <field name="template_id" readonly="created"/>
+                                    <field name="corso_id" readonly="not template_id" options="{'no_create': True}"
+                                           domain="[('data_inizio','&gt;=',context_today().strftime('%Y-%m-%d')), ('computed','=',False)]"/>
+                                    <field name="data_iscrizione"/>
+                                    <field name="esame_id"/>
+                                </group>
+                                <group>
+                                    <field name="marittimo_id" readonly="created" context="{'default_anagrafica_ey': True}"/>
+                                    <field name="destinatario_id" domain="[('customer_rank','&gt;',0)]"/>
+                                    <field name="prezzo_corso"/>
+                                    <field name="prezzo_scontato"/>
+                                </group>
+                            </group>
+                            <group string="Documenti marittimo">
+                                <field name="documento_ids" nolabel="1" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="iscrizione_id" readonly="1"/>
+                            </group>
+                            <group string="Esito">
+                                <field name="esito"/>
+                                <field name="note_esito"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ey_corsi_pre_iscrizione" model="ir.actions.act_window">
+        <field name="name">Preiscrizioni ai corsi</field>
+        <field name="res_model">ey_corsi.pre_iscrizione</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="ey_corsi_pre_iscrizione_search_view"/>
+        <field name="context">{'search_default_preiscrizioni_non_annullate': 1}</field>
+    </record>
+
+</odoo>

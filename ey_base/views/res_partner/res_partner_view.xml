@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ey_base_res_partner_filter" model="ir.ui.view">
+        <field name="name">ey_base.res.partner.select</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <search position="inside">
+                <filter name="filter_armatore_proprietario" string="Armatore / Proprietario" domain="[('armatore_proprietario','=',True)]"/>
+                <filter name="filter_altri_soggetti" string="Altri soggetti" domain="[('altri_soggetti','=',True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="ey_base_res_partner_form_view" model="ir.ui.view">
+        <field name="name">ey_base.res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Flag ruolo nautico nella scheda principale -->
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="armatore_proprietario"/>
+                <field name="altri_soggetti"/>
+            </xpath>
+
+            <xpath expr="//page[@name='sales_purchases']" position="after">
+                <page string="Navi" name="navi"
+                      invisible="not armatore_proprietario">
+                    <field name="nave_arm_prop_ids" readonly="1">
+                        <list>
+                            <field name="armatore_proprietario"/>
+                            <field name="nave_name"/>
+                            <field name="nave_tipo_registro"/>
+                            <field name="nave_nr_on"/>
+                            <field name="nave_porto"/>
+                            <field name="nave_bandiera"/>
+                            <field name="data_inizio"/>
+                            <field name="data_fine"/>
+                            <field name="carati"/>
+                            <field name="riferimento"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Ruoli su navi" name="ruoli_navi"
+                      invisible="not altri_soggetti">
+                    <field name="rappresentante_ruolo_ids" readonly="1">
+                        <list>
+                            <field name="nave_id"/>
+                            <field name="ruolo_id"/>
+                            <field name="testo_descrittivo"/>
+                            <field name="riferimento"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- ARMATORI / PROPRIETARI -->
+    <record id="action_ey_base_armatore_proprietario" model="ir.actions.act_window">
+        <field name="name">Armatori / Proprietari</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="context">{'search_default_filter_armatore_proprietario': 1, 'default_armatore_proprietario': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Clicca qui per inserire nuovi Armatori / Proprietari.
+            </p>
+        </field>
+    </record>
+
+    <!-- ALTRI SOGGETTI -->
+    <record id="action_ey_base_altri_soggetti" model="ir.actions.act_window">
+        <field name="name">Altri soggetti</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="context">{'search_default_filter_altri_soggetti': 1, 'default_altri_soggetti': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Clicca qui per inserire nuovi soggetti.
+            </p>
+        </field>
+    </record>
+
+</odoo>

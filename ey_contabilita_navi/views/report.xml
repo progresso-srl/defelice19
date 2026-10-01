@@ -1,0 +1,62 @@
+<odoo>
+    <data>
+        <!-- 
+        NOTA: I report py3o sono commentati perché richiedono il modulo 'report_py3o' che potrebbe non essere installato.
+        Per riattivarli:
+        1. Installa il modulo report_py3o
+        2. Decommenta i record sottostanti
+        -->
+        
+        <!-- PREVENTIVO -->
+        <!--
+        <record id="ey_contabilita_navi_previsionale_contratto_preventivo_id" model="ir.actions.report">
+            <field name="name">Preventivo</field>
+            <field name="model">ey_contabilita_navi.previsionale_contratto</field>
+            <field name="report_name">ey_contabilita_navi_previsionale_contratto_preventivo_report</field>
+            <field name="report_type">py3o</field>
+            <field name="py3o_filetype">odt</field>
+            <field name="module">ey_contabilita_navi</field>
+            <field name="py3o_template_fallback">report/tpl/preventivo.odt</field>
+        </record>
+        -->
+        
+        <!-- CONSUNTIVO -->
+        <!--
+        <record id="ey_contabilita_navi_previsionale_contratto_consuntivo_id" model="ir.actions.report">
+            <field name="name">Consuntivo</field>
+            <field name="model">ey_contabilita_navi.previsionale_contratto</field>
+            <field name="report_name">ey_contabilita_navi_previsionale_contratto_consuntivo_report</field>
+            <field name="report_type">py3o</field>
+            <field name="py3o_filetype">odt</field>
+            <field name="module">ey_contabilita_navi</field>
+            <field name="py3o_template_fallback">report/tpl/consuntivo.odt</field>
+        </record>
+        -->
+
+        <!-- CONSUNTIVO DETTAGLIO -->
+        <!--
+        <record id="ey_contabilita_navi_previsionale_contratto_consuntivo_dettaglio_id" model="ir.actions.report">
+            <field name="name">Consuntivo Dettaglio</field>
+            <field name="model">ey_contabilita_navi.previsionale_contratto</field>
+            <field name="report_name">ey_contabilita_navi_previsionale_contratto_consuntivo_dettaglio_report</field>
+            <field name="report_type">py3o</field>
+            <field name="py3o_filetype">odt</field>
+            <field name="module">ey_contabilita_navi</field>
+            <field name="py3o_template_fallback">report/tpl/consuntivo_dettaglio.odt</field>
+        </record>
+        -->
+
+        <!-- Richiesta Fondi -->
+        <!--
+        <record id="ey_contabilita_navi_previsionale_contratto_richiesta_fondi_id" model="ir.actions.report">
+            <field name="name">Richiesta Fondi</field>
+            <field name="model">ey_contabilita_navi.previsionale_contratto</field>
+            <field name="report_name">ey_contabilita_navi_previsionale_contratto_richiesta_fondi_report</field>
+            <field name="report_type">py3o</field>
+            <field name="py3o_filetype">odt</field>
+            <field name="module">ey_contabilita_navi</field>
+            <field name="py3o_template_fallback">report/tpl/richiesta_fondi.odt</field>
+        </record>
+        -->
+    </data>
+</odoo>

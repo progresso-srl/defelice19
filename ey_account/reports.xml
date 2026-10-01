@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<openerp>
+    <data noupdate="0">
+        <report
+            id="action_report_registro_iva"
+            model="account.move"
+            string="Registro iva Agenzia De Felice"
+            report_type="qweb-pdf"
+            name="ey_account.report_registro_iva"
+            file="ey_account.report_registro_iva"
+            menu="False"
+            auto="False"
+        />
+
+        <report
+            id="action_report_mastro"
+            model="res.partner"
+            string="Partner Ledger"
+            report_type="qweb-pdf"
+            name="ey_account.account_report_mastro"
+            menu="False"
+        />
+
+        <record id="ey_account.action_report_registro_iva" model="ir.actions.report.xml">
+            <field name="paperformat_id"
+            ref="l10n_it_account.l10n_it_account_a4_portrait"/>
+       </record>
+
+    </data>
+</openerp>

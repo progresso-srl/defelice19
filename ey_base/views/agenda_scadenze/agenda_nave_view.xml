@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ey_base_agenda_nave_list_view" model="ir.ui.view">
+        <field name="name">ey_base.agenda_nave.list</field>
+        <field name="model">ey_base.agenda_nave</field>
+        <field name="arch" type="xml">
+            <list string="Agenda scadenze" default_order="data_scadenza asc"
+                  decoration-danger="data_scadenza &lt;= current_date and not completato"
+                  decoration-warning="data_alert &lt;= current_date and data_scadenza &gt; current_date and not completato"
+                  decoration-muted="completato">
+                <field name="name"/>
+                <field name="categoria_id"/>
+                <field name="data_alert"/>
+                <field name="data_scadenza"/>
+                <field name="completato" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ey_base_agenda_nave_search_view" model="ir.ui.view">
+        <field name="name">ey_base.agenda_nave.search</field>
+        <field name="model">ey_base.agenda_nave</field>
+        <field name="arch" type="xml">
+            <search string="Cerca scadenze">
+                <field name="name"/>
+                <field name="categoria_id"/>
+                <separator/>
+                <filter name="in_alert" string="In alert"
+                        domain="[('data_alert','&lt;=',context_today().strftime('%Y-%m-%d')),
+                                 ('completato','=',False)]"/>
+                <filter name="scadute" string="Scadute"
+                        domain="[('data_scadenza','&lt;',context_today().strftime('%Y-%m-%d')),
+                                 ('completato','=',False)]"/>
+                <filter name="non_completate" string="Da completare"
+                        domain="[('completato','=',False)]"/>
+                <filter name="completate" string="Completate"
+                        domain="[('completato','=',True)]"/>
+                <group name="groupby">
+                    <filter name="group_categoria" string="Categoria"
+                            context="{'group_by':'categoria_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_ey_base_agenda_nave" model="ir.actions.act_window">
+        <field name="name">Agenda scadenze navi</field>
+        <field name="res_model">ey_base.agenda_nave</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="ey_base_agenda_nave_search_view"/>
+        <field name="context">{'search_default_in_alert': 1}</field>
+    </record>
+
+</odoo>

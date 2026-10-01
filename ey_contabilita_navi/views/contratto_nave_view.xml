@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <!-- tree view -->
+        <record id="ey_contabilita_navi_contratto_nave_tree_view" model="ir.ui.view">
+            <field name="name">ey_contabilita_navi.contratto_nave.tree</field>
+            <field name="model">ey_contabilita_navi.contratto_nave</field>
+            <field name="arch" type="xml">
+                <list string="Contratti">
+                    <field name="nome_contratto" />
+                    <field name="nave_id" />
+                    <field name="mese_inizio" />
+                    <field name="anno_inizio" />
+                    <field name="currency_id" invisible="1" />
+                    <field name="attivo" />
+                    <field name="periodo_id" />
+                    <field name="saldo_attuale" widget='monetary'
+                        options="{'currency_field': 'currency_id'}" />
+                </list>
+            </field>
+        </record>
+
+        <!-- search view -->
+        <record id="ey_contabilita_navi_contratto_nave_search_view" model="ir.ui.view">
+            <field name="name">ey_contabilita_navi.contratto_nave.select</field>
+            <field name="model">ey_contabilita_navi.contratto_nave</field>
+            <field name="arch" type="xml">
+                <search string="Search...">
+                    <field name="nave_id" />
+
+                    <filter name="ey_contabilita_navi_con_nav_attivi" string="Attivi"
+                        domain="[('attivo','=', True)]" />
+                    <filter name="ey_contabilita_navi_con_nav_non_attivi" string="Non attivi"
+                        domain="[('attivo','=', False)]" />
+
+                </search>
+            </field>
+        </record>
+
+        <!-- form view -->
+        <record id="ey_contabilita_navi_contratto_nave_form_view" model="ir.ui.view">
+            <field name="name">ey_contabilita_navi.contratto_nave.form</field>
+            <field name="model">ey_contabilita_navi.contratto_nave</field>
+            <field name="arch" type="xml">
+                <form string="Contratto">
+                    <header>
+                        <button name="button_crea_prossimo_previsionale"
+                            string="Crea prossimo previsionale" type="object"
+                            class="oe_highlight" readonly="attivo != False" />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object"
+                                    name="button_mostra_preventivi_contratto"
+                                    icon="fa-book" string="Mostra preventivi">
+                            </button>
+                        </div>
+
+                        <div class="oe_title" style="width: 80%">
+                            <h1 invisible="id != False">Nuovo contratto</h1>
+                            <h1>
+                                <field name="id" invisible="1" />
+                                <field name="name" placeholder="Nome" readonly="1"
+                                    invisible="id == False" />
+                            </h1>
+                        </div>
+                        <field name="currency_id" invisible="1" />
+                        <group string="Dati contratto">
+                            <group>
+                                <field name="nome_contratto"
+                                    invisible="id != False" />
+                                <field name="nave_id"
+                                    readonly="previsionale_ids" />
+                                <field name="soggetto_riferimento_id"
+                                    readonly="previsionale_ids"
+                                    domain="[('armatore_proprietario', '=', 'True')]"
+                                    options="{'no_create': True, 'no_create_edit' : True}" />
+                                <field name="saldo_iniziale" widget='monetary'
+                                    options="{'currency_field': 'currency_id'}"
+                                    readonly="previsionale_ids" />
+                                <field name="currency_id"
+                                    readonly="previsionale_ids" />
+                            </group>
+                            <group>
+                                <field name="mese_inizio"
+                                    readonly="previsionale_ids" />
+                                <field name="anno_inizio"
+                                    readonly="previsionale_ids" />
+                                <field name="periodo_id"
+                                    readonly="previsionale_ids" />
+                                <field name="attivo" />
+                            </group>
+                        </group>
+                        <group>
+                            <group class="oe_subtotal_footer" colspan="2" name="sale_total">
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="saldo_attuale" />
+                                </div>
+                                <field name="saldo_attuale" string="Saldo attuale" nolabel="1"
+                                    class="oe_subtotal_footer_separator"
+                                    widget='monetary' options="{'currency_field': 'currency_id'}" />
+                            </group>
+                            <group />
+                        </group>
+                        <notebook name="other_elements">
+                            <page string="Previsionali">
+                                <field name="previsionale_ids" nolabel="1">
+                                    <list create="false" delete="false">
+                                        <field name="mese_inizio" />
+                                        <field name="anno_inizio" />
+                                        <field name="currency_id" invisible="1" />
+                                        <field name="cifra_totale" widget='monetary'
+                                            options="{'currency_field': 'currency_id'}" />
+                                        <field name="totale_richiesto" widget='monetary'
+                                            options="{'currency_field': 'currency_id'}" />
+                                        <field name="totale_speso" widget='monetary'
+                                            options="{'currency_field': 'currency_id'}" />
+                                        <field name="bilancio" widget='monetary'
+                                            options="{'currency_field': 'currency_id'}" />
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Altre info">
+                                <group string="Note">
+                                    <field name="note" nolabel="1" />
+                                </group>
+                                <group string="Allegati">
+                                    <field name="documento_ids" nolabel="1">
+                                        <list editable="bottom">
+                                            <field name="descrizione" />
+                                            <field name="tipo_id" />
+                                            <field name="data_inserimento" />
+                                            <field name="document" filename="document_fname"
+                                                widget="binary" />
+                                            <field name="document_fname" invisible="1" />
+                                        </list>
+                                    </field>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- action per creare un tpl -->
+        <record id="ey_contabilita_navi_contratto_nave_action" model="ir.actions.act_window">
+            <field name="name">Contratti</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ey_contabilita_navi.contratto_nave</field>
+            <field name="context">{'search_default_ey_contabilita_navi_con_nav_attivi': 1}</field>
+            <field name="filter" eval="True" />
+            <field name="view_mode">list,form</field>
+        </record>
+        <record id="ey_contabilita_navi_contratto_nave_tree_view_act"
+            model="ir.actions.act_window.view">
+            <field name="sequence" eval="0" />
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="ey_contabilita_navi_contratto_nave_tree_view" />
+            <field name="act_window_id" ref="ey_contabilita_navi_contratto_nave_action" />
+        </record>
+        <record id="ey_contabilita_navi_contratto_nave_form_view_act"
+            model="ir.actions.act_window.view">
+            <field name="sequence" eval="1" />
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ey_contabilita_navi_contratto_nave_form_view" />
+            <field name="act_window_id" ref="ey_contabilita_navi_contratto_nave_action" />
+        </record>
+
+        <!--crea
+        la voce del menu -->
+        <menuitem
+            id="ey_contabilita_navi.contratto_nave_menu" name="Contratti"
+            parent="ey_contabilita_navi.main_menu"
+            action="ey_contabilita_navi_contratto_nave_action"
+            sequence="10"
+        />
+
+    </data>
+</odoo>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <!-- form view -->
+        <record id="ey2_wiz_add_soggetto_pratica_form_view" model="ir.ui.view">
+            <field name="name">ey2.wiz_add_soggetto_pratica.form</field>
+            <field name="model">ey2.wiz_add_soggetto_pratica</field>
+            <field name="arch" type="xml">
+                <form string="Crea lista dare/avere" version="7.0">
+                    <group>
+                        <group>
+                            <field name="tipo_soggetto" />
+                            <field name="pratica_id"
+                                    domain="[('state', 'in', ['h-In corso', 'c-Pre-istruzione'])]"/>
+                        </group>
+                        <group>
+                            <field name="partner_id"
+                                    attrs="{'readonly': [('tipo_soggetto', '=', False)]}"/>
+                            <field name="ruolo"
+                                   attrs="{'invisible': [('tipo_soggetto', '!=', 'Altri soggetti')]}"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="button_aggiungi_soggetto" string="Aggiungi soggetto a pratica" type="object"
+                                class="oe_highlight"/>
+                        o
+                        <button string="Annulla" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="ey2_wiz_add_soggetto_pratica_action" model="ir.actions.act_window">
+            <field name="name">Aggiungi soggetto a pratica</field>
+            <field name="res_model">ey2.wiz_add_soggetto_pratica</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <record id="ey2_wiz_add_soggetto_pratica_form_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ey2_wiz_add_soggetto_pratica_form_view"/>
+            <field name="act_window_id" ref="ey2_wiz_add_soggetto_pratica_action"/>
+        </record>
+
+        <!-- menuitem -->
+        <menuitem
+                id="ey2_wiz_add_soggetto_pratica_menu" name="...pratica nave"
+                parent="menu_ey2_wizard"
+                action="ey2_wiz_add_soggetto_pratica_action"
+                sequence="10"
+                />
+
+
+    </data>
+</openerp>

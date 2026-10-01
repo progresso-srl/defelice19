@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="ey2_pratica_soggetto_tree_view" model="ir.ui.view">
+            <field name="name">ey2.pratica_soggetto.tree</field>
+            <field name="model">ey2.pratica_soggetto</field>
+            <field name="arch" type="xml">
+                <tree string="Pratiche"
+                      colors="red:state=='a-Alert';gray:state=='x-Sospesa';blue:state=='h-In corso';tomato:state=='s-Fatturata';green:state=='c-Preventivo';darkviolet:state=='p-Da fatturare';">
+                    <field name="name"/>
+                    <field name="riferimento_pratica"/>
+                    <field name="state"/>
+                    <field name="data_pratica"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ey2_pratica_soggetto_search_view" model="ir.ui.view">
+            <field name="name">ey2.pratica_soggetto.select</field>
+            <field name="model">ey2.pratica_soggetto</field>
+            <field name="arch" type="xml">
+                <search string="Search...">
+                    <field name="tpl_id"/>
+                    <field name="partner_id"/>
+                    <field name="tipo_pratica"/>
+                    <field name="riferimento_pratica"/>
+                    <field name="tipo_documento_id"/>
+
+                    <group string="Filtri predefiniti">
+                        <filter name="ey2_pratiche_viosibili" string="Visibili"
+                                domain="[('state', 'not in', ['v-Pagata', 'z-Annullata'])]"/>
+                        <filter name="ey2_pratiche_my" string="My" domain="[('user_id','=',uid)]"/>
+                        <filter name="ey2_pratiche_my_and_visibili" string="My &amp; Visibili"
+                                domain="[('user_id','=',uid), ('state', 'not in', ['v-Pagata', 'z-Annullata'])]"/>
+                    </group>
+
+                    <group string="Group by...">
+                        <filter name="group_ey2_pratica_soggetto_nave" string="Soggetto" icon="terp-partner"
+                                context="{'group_by':'partner_id'}"/>
+                        <filter name="group_ey2_pratica_soggetto_tpl" string="Template" icon="terp-partner"
+                                context="{'group_by':'tpl_id'}"/>
+                        <filter name="group_ey2_pratica_soggetto_tipo_pratica" string="Tipo pratica" icon="terp-partner"
+                                context="{'group_by':'tipo_pratica'}"/>
+                        <filter name="group_ey2_pratica_soggetto_state" string="Stato" icon="terp-partner"
+                                context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="ey2_pratica_soggetto_form_view" model="ir.ui.view">
+            <field name="name">ey2.pratica_soggetto.form</field>
+            <field name="model">ey2.pratica_soggetto</field>
+            <field name="arch" type="xml">
+                <form string="Pratiche" version="7.0">
+                    <header>
+                        <button string="Preventivo"
+                                attrs="{'invisible': [('state', '=', 'c-Preventivo')]}" class="oe_edit_only"
+                                name="stato_preventivo" type="object"/>
+                        <button string="In corso"
+                                attrs="{'invisible': [('state', '=', 'h-In corso')]}" class="oe_edit_only"
+                                name="stato_in_corso" type="object"/>
+                        <button string="Da fatturare"
+                                attrs="{'invisible': [('state', '=', 'p-Da fatturare')]}" class="oe_edit_only"
+                                name="stato_da_fatturare" type="object"/>
+                        <button string="Fatturata"
+                                attrs="{'invisible': [('state', '=', 's-Fatturata')]}" class="oe_edit_only"
+                                name="stato_fatturata" type="object"/>
+                        <button string="Pagata"
+                                attrs="{'invisible': [('state', '=', 'v-Pagata')]}" class="oe_edit_only"
+                                name="stato_pagata" type="object"/>
+                        <button string="Sospesa"
+                                attrs="{'invisible': [('state', '=', 'x-Sospesa')]}" class="oe_edit_only"
+                                name="stato_sospesa" type="object"/>
+                        <button string="Annullata"
+                                attrs="{'invisible': [('state', '=', 'z-Annullata')]}" class="oe_edit_only"
+                                name="stato_annullata" type="object"/>
+                        <field name="state" widget="statusbar"/> <!--nolabel="1"
+                               statusbar_visible="a-Alert,c-Preventivo,h-In corso,p-Da fatturare,s-Fatturata,v-Pagata,x-Sospesa,z-Annullata"
+                               statusbar_colors='{"a-Alert":"red"}'
+                               states="a-Alert,c-Preventivo,h-In corso,p-Da fatturare,s-Fatturata,v-Pagata,x-Sospesa,z-Annullata"/>-->
+                    </header>
+                    <sheet>
+                        <div class="oe_title" style="width: 80%">
+                            <h1>
+                                <field name="created" invisible="1"/>
+                                <field name="name" placeholder="Nome"/>
+                            </h1>
+                            <h4>
+                                <field name="user_id" placeholder="Responsabile"/>
+                            </h4>
+                        </div>
+                        <notebook>
+                            <page string="Generale">
+                                <group>
+                                    <group name="info_pratica_sx">
+                                        <field name="id" invisible="1" />
+                                        <field name="tpl_id" placeholder="Nome"
+                                               attrs="{'readonly': [('created', '=', True)]}"
+                                               options="{'no_create': True, 'no_open': True, 'limit': 1000}"
+                                               domain="[('stato_template', '=', 'Attivo'), ('tipo_template', '=', 'Soggetti')]"/>
+                                        <field name="data_pratica" attrs="{'readonly': [('id', '!=', False)]}"/>
+                                        <!--<field name="state"/> -->
+                                        <!--<field name="tipo_pratica" readonly="1"
+                                               attrs="{'invisible': [('created', '=', False)]}"/> -->
+                                        <field name="riferimento_pratica" placeholder="Riferimento" readonly="1"/>
+                                    </group>
+                                    <group name="info_pratica_dx">
+                                        <field name="partner_id" attrs="{'readonly': [('created', '=', True)]}"/>
+                                        <field name="tipo_documento_id"
+                                               attrs="{'readonly': [('created', '=', True)]}"/>
+                                        <field name="soggetto_fatturazione_id"/>
+                                    </group>
+                                </group>
+                                <group string="Referenti pratica">
+                                    <field name="contatto_pratica_ids" nolabel="1">
+                                        <tree editable="top">
+                                            <field name="name"/>
+                                            <field name="tipo_id"/>
+                                            <field name="phone"/>
+                                            <field name="cellulare"/>
+                                            <field name="email"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Campi soggetto">
+                                    <group>
+                                        <field name="cognome_soggetto" readonly="1"/>
+                                        <field name="cf_soggetto" readonly="1"/>
+                                        <field name="stato_civile_soggetto" readonly="1"/>
+                                        <field name="tipo_documento_soggetto" readonly="1"/>
+                                        <field name="luogo_rilascio_documento_soggetto" readonly="1"/>
+                                        <field name="documento_soggetto_id" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="nome_soggetto" readonly="1"/>
+                                        <field name="cittadinanza_soggetto" readonly="1"/>
+                                        <field name="indirizzo_soggetto_id" readonly="1"/>
+                                        <field name="numero_documento_soggetto" readonly="1"/>
+                                        <field name="categoria_documento_soggetto" readonly="1"/>
+                                        <field name="rilascio_documento_soggetto" readonly="1"/>
+                                    </group>
+                                </group>
+                                <group string="Altri soggetti">
+                                    <field name="rappresentante_ids" nolabel="1">
+                                        <tree editable="bottom" create="false" delete="false">
+                                            <field name="cognome" readonly="1"/>
+                                            <field name="nome" readonly="1"/>
+                                            <field name="identificatore"/>
+                                            <field name="indirizzo_id" readonly="1"/>
+                                            <field name="fiscalcode" readonly="1"/>
+                                            <field name="ruolo" readonly="1"/>
+                                            <field name="testo_descrittivo"/>
+                                            <button type="object" string="Vedi" name="get_partner"
+                                                    help="Visualizza anagrafica collegata"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Enti">
+                                    <field name="ente_ids" nolabel="1">
+                                        <tree editable="bottom">
+                                            <field name="id" invisible="1"/>
+                                            <field name="partner_id"
+                                                   attrs="{'readonly': [('id', '!=', False)]}"/>
+                                            <field name="denominazione" readonly="1"/>
+                                            <field name="sede" readonly="1"/>
+                                            <field name="ufficio" readonly="1"/>
+                                            <field name="identificatore"/>
+                                            <field name="indirizzo_id" readonly="1"/>
+                                            <field name="fiscalcode" readonly="1"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Chiavi">
+                                    <field name="chiave_ids" nolabel="1">
+                                        <tree editable="bottom" create="false" delete="false"
+                                              colors="blue:is_valore==True">
+                                            <!--<field name="chiave" readonly="1" /> -->
+                                            <field name="descrizione" readonly="1"/>
+                                            <field name="valore" attrs="{'readonly': [('is_valore', '=', False)]}"/>
+                                            <field name="is_valore" invisible="1"/>
+                                            <field name="priority" readonly="1"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Reports">
+                                    <field name="report_ids" nolabel="1" readonly="1">
+                                        <tree editable="bottom">
+                                            <field name="report_id" readonly="1"/>
+                                            <field name="priority"/>
+                                            <button name="button_stampa_pratica" string="Stampa documento"
+                                                    class="oe_highlight" type="object"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                            <page string="Info e documenti">
+                                <group string="Info operatore">
+                                    <field name="info_operatore" readonly="1"/>
+                                </group>
+                                <group string="Allegati info operatore">
+                                    <field name="allegati" nolabel="1" readonly="1">
+                                        <tree editable="bottom">
+                                            <field name="name" readonly="1"/>
+                                            <field name="document" filename="document_fname" readonly="1"/>
+                                            <field name="document_fname" invisible="1"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Documenti pratica">
+                                    <field name="documenti_pratica_ids" nolabel="1">
+                                        <tree editable="bottom">
+                                            <field name="name"/>
+                                            <field name="document" filename="document_fname"/>
+                                            <field name="document_fname" invisible="1"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                            <page string="Attività">
+                                <group string="Attività di sistema">
+                                    <field name="att_sistema_ids" readonly="1" nolabel="1">
+                                        <tree editable="top">
+                                            <field name="data"/>
+                                            <field name="operatore_id"/>
+                                            <field name="descrizione"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Attività svolte dall'operatore">
+                                    <field name="att_operatore_ids" nolabel="1">
+                                        <tree editable="top">
+                                            <field name="data"/>
+                                            <field name="operatore_id"/>
+                                            <field name="descrizione"/>
+                                            <field name="document" filename="document_fname"/>
+                                            <field name="document_fname" invisible="1"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                            <page string="Follow Up">
+                                <field name="follow_up_ids" nolabel="1"/>
+                            </page>
+                            <page string="Pratiche collegate">
+                                <field name="id" invisible="1"/>
+                                <field name="pratiche_collegate" options="{'no_create': True}"
+                                       domain="[('id', '!=', id)]">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="data_pratica"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Alerts">
+                                <field name="alert_ids">
+                                    <tree editable="top">
+                                        <field name="data"/>
+                                        <field name="operatore_id"/>
+                                        <field name="descrizione"/>
+                                        <field name="attivo"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- action per creare un tpl -->
+        <record id="ey2_pratica_soggetto_action" model="ir.actions.act_window">
+            <field name="name">Pratiche</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ey2.pratica_soggetto</field>
+            <field name="view_type">form</field>
+            <field name="filter" eval="True"/>
+            <field name="context">
+                {'search_default_ey2_pratiche_my_and_visibili': 1}
+            </field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="ey2_pratica_soggetto_tree_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="ey2_pratica_soggetto_tree_view"/>
+            <field name="act_window_id" ref="ey2_pratica_soggetto_action"/>
+        </record>
+        <record id="ey2_pratica_soggetto_form_view_act" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ey2_pratica_soggetto_form_view"/>
+            <field name="act_window_id" ref="ey2_pratica_soggetto_action"/>
+        </record>
+
+        <!--crea la voce del menu -->
+        <menuitem
+                id="ey2_pratica_soggetto_menu" name="Pratiche soggetti"
+                parent="menu_ey2_pratiche"
+                action="ey2_pratica_soggetto_action"
+                sequence="20"
+        />
+
+
+    </data>
+</openerp>

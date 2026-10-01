@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <!-- form view -->
+        <record id="ey_corso_form_view" model="ir.ui.view">
+            <field name="name">ey.corso.form.inherit</field>
+            <field name="model">ey.corso</field>
+            <field name="inherit_id" ref="ey.ey_corso_form_view"/>
+            <field eval="7" name="priority"/>
+            <field name="arch" type="xml">
+                <field name="nr_approvazione" position="after">
+                    <field name="sede_id" />
+                </field>
+                <field name="codice_unico" position="after">
+                    <field name="pubblicato" />
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

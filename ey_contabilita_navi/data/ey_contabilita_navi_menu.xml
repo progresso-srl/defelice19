@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+    
+        <!-- Contabilita navi main menu -->
+        <menuitem name="Gestione navi" id="ey_contabilita_navi.main_menu" />
+
+    </data>
+</odoo>

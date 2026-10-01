@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="0">
+
+        <!-- Top menu item -->
+        <menuitem
+            name="Configuratore pratiche"
+            id="base.ctpl_menu"
+        />
+
+        <menuitem
+            name="Configurazione"
+            id="menu_ctpl_config"
+            parent="base.ctpl_menu"
+            sequence="10"
+        />
+
+
+    </data>
+</openerp>

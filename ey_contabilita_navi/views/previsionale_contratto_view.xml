@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <!-- tree view -->
+        <record id="ey_contabilita_navi_previsionale_contratto_tree_view" model="ir.ui.view">
+            <field name="name">ey_contabilita_navi.previsionale_contratto.tree</field>
+            <field name="model">ey_contabilita_navi.previsionale_contratto</field>
+            <field name="arch" type="xml">
+                <list string="Previsionali" create="false">
+                    <field name="contratto_id" />
+                    <field name="mese_inizio" />
+                    <field name="anno_inizio" />
+                    <field name="currency_id" invisible="1" />
+                    <field name="totale_richiesto" widget='monetary'
+                        options="{'currency_field': 'currency_id'}" />
+                    <field name="totale_speso" widget='monetary'
+                        options="{'currency_field': 'currency_id'}" />
+                    <field name="bilancio" widget='monetary'
+                        options="{'currency_field': 'currency_id'}" />
+                </list>
+            </field>
+        </record>
+
+        <!-- search view - COMMENTATA: problemi con Odoo 19, da ricreare dopo installazione -->
+        <!--
+        <record id="ey_contabilita_navi_previsionale_contratto_search_view" model="ir.ui.view">
+            <field name="name">ey_contabilita_navi.previsionale_contratto.search</field>
+            <field name="model">ey_contabilita_navi.previsionale_contratto</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="contratto_id" />
+                    <group string="Group by...">
+                        <filter name="ey_contabilita_navi_previs_nav_group_by_contratto"
+                            string="Contratto"
+                            context="{'group_by': 'contratto_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        -->
+
+        <!-- form view -->
+        <record id="ey_contabilita_navi_previsionale_contratto_form_view" model="ir.ui.view">
+            <field name="name">ey_contabilita_navi.previsionale_contratto.form</field>
+            <field name="model">ey_contabilita_navi.previsionale_contratto</field>
+            <field name="arch" type="xml">
+                <form string="Previsionale" create="false">
+                    <header>
+                        <button string="Previsionale"
+                            invisible="state == 'Previsionale' or state == 'Chiuso' or id == False"
+                            class="oe_edit_only" name="stato_previsionale" type="object" />
+                        <button string="Consolidato"
+                            invisible="state == 'Consolidato' or id == False"
+                            class="oe_edit_only" name="stato_consolidato" type="object" />
+                        <button string="Chiuso"
+                            invisible="state == 'Chiuso' or state == 'Previsionale' or id == False"
+                            class="oe_edit_only" name="stato_chiuso" type="object" />
+                        <button string="Stampa richiesta fondi"
+                            class="oe_button oe_read_only oe_form_button oe_highlight"
+                            name="button_stampa_richiesta_fondi" type="object"
+                            invisible="state == 'Previsionale' or state == 'Chiuso' or id == False" />
+                        <button string="Stampa preventivo"
+                            class="oe_button oe_read_only oe_form_button oe_highlight"
+                            name="button_stampa_preventivo" type="object"
+                            invisible="state == 'Previsionale' or state == 'Chiuso' or id == False" />
+                        <button string="Stampa consuntivo riepilogativo"
+                            class="oe_button oe_read_only oe_form_button oe_highlight"
+                            name="button_stampa_consuntivo" type="object"
+                            invisible="state == 'Previsionale' or id == False" />
+                        <button string="Stampa consuntivo dettaglio"
+                            class="oe_button oe_read_only oe_form_button oe_highlight"
+                            name="button_stampa_consuntivo_dettaglio" type="object"
+                            invisible="state == 'Previsionale' or id == False" />
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title" style="width: 80%">
+                            <h1 invisible="id != False">Nuovo previsionale</h1>
+                            <h1>
+                                <field name="id" invisible="1" />
+                                <field name="name" placeholder="Nome"
+                                    invisible="id == False" />
+                            </h1>
+                            <h4>
+                                <field name="contratto_id" placeholder="Contratto" readonly="1" />
+                            </h4>
+                        </div>
+                        <group string="Dati previsionale">
+                            <group>
+                                <field name="mese_inizio"
+                                    readonly="id != False" />
+                                <field name="totale_richiesto" widget='monetary'
+                                    options="{'currency_field': 'currency_id'}" />
+                                <field name="totale_speso" widget='monetary'
+                                    options="{'currency_field': 'currency_id'}" />
+                            </group>
+                            <group>
+                                <field name="anno_inizio"
+                                    readonly="id != False" />
+                                <field name="durata_id" readonly="1" />
+                                <field name="currency_id" readonly="1" />
+                            </group>
+                        </group>
+                        <group>
+                            <group class="oe_subtotal_footer" colspan="2" name="sale_total">
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="bilancio" />
+                                </div>
+                                <field name="state_change" invisible="1" />
+                                <field name="bilancio_preventivo" invisible="1" />
+                                <field name="bilancio" string="Bilancio previsionale" nolabel="1"
+                                    class="oe_subtotal_footer_separator"
+                                    widget='monetary' options="{'currency_field': 'currency_id'}" />
+                            </group>
+                            <group />
+                        </group>
+                        <notebook name="other_elements">
+                            <page string="Spese">
+                                <group>
+                                    <field name="spesa_ids" nolabel="1"
+                                        readonly="state == 'Chiuso'">
+                                        <list editable="bottom">
+                                            <field name="tipo_id" />
+                                            <field name="name" />
+                                            <field name="previsionale_id" invisible="1" />
+                                            <field name="currency_id" invisible="1" />
+                                            <field name="previsto"
+                                                readonly="parent.state != 'Previsionale'"
+                                                options="{'currency_field': 'previsionale_id.currency_id'}" />
+                                            <field name="effettivo"
+                                                column_invisible="parent.state == 'Previsionale'"
+                                                options="{'currency_field': 'previsionale_id.currency_id'}" />
+                                            <field name="confermata"
+                                                column_invisible="parent.state == 'Previsionale'" />
+                                            <field name="data_conferma"
+                                                column_invisible="parent.state == 'Previsionale'" />
+                                            <field name="account_move_id" readonly="1"
+                                                column_invisible="parent.state == 'Previsionale'" />
+                                            <field name="status_account" readonly="1"
+                                                column_invisible="parent.state == 'Previsionale'" />
+                                            <button name="button_crea_linea_contabile"
+                                                string="Crea linea contabile" type="object"
+                                                class="oe_highlight"
+                                                column_invisible="parent.state == 'Previsionale'" 
+                                                invisible="account_move_id != False or parent.state == 'Chiuso'" />
+                                        </list>
+                                    </field>
+                                </group>
+                            </page>
+                            <page string="Anticipi armatore">
+                                <field name="anticipi_armatore_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="name" />
+                                        <field name="cifra"
+                                            options="{'currency_field': 'previsionale_id.currency_id'}" />
+                                        <field name="data" />
+                                        <field name="account_move_id" readonly="1" />
+                                        <field name="status_account" readonly="1" />
+                                        <field name="previsionale_id" invisible="1" />
+                                        <field name="currency_id" invisible="1" />
+                                        <field name="document" filename="document_fname"
+                                            widget="binary" />
+                                        <field name="document_fname" invisible="1" />
+                                        <button name="button_crea_linea_contabile"
+                                            string="Crea linea contabile" type="object"
+                                            class="oe_highlight"
+                                            invisible="account_move_id != False or parent.state == 'Chiuso'" />
+                                    </list>
+                                </field>
+                                <group>
+                                    <field name="cifra_totale"
+                                        options="{'currency_field': 'currency_id'}" />
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- action per creare un tpl -->
+        <record id="ey_contabilita_navi_previsionale_contratto_action" model="ir.actions.act_window">
+            <field name="name">Previsionali</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ey_contabilita_navi.previsionale_contratto</field>
+            <field name="context">{'search_default_ey2_previs_nav_group_by_contratto': 1}</field>
+            <field name="filter" eval="True" />
+            <field name="view_mode">list,form</field>
+        </record>
+        <record id="ey_contabilita_navi_previsionale_contratto_tree_view_act"
+            model="ir.actions.act_window.view">
+            <field name="sequence" eval="0" />
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="ey_contabilita_navi_previsionale_contratto_tree_view" />
+            <field name="act_window_id" ref="ey_contabilita_navi_previsionale_contratto_action" />
+        </record>
+        <record id="ey_contabilita_navi_previsionale_contratto_form_view_act"
+            model="ir.actions.act_window.view">
+            <field name="sequence" eval="1" />
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="ey_contabilita_navi_previsionale_contratto_form_view" />
+            <field name="act_window_id" ref="ey_contabilita_navi_previsionale_contratto_action" />
+        </record>
+
+        <!--crea
+        la voce del menu -->
+        <menuitem
+            id="ey_contabilita_navi.previsionale_contratto_menu" name="Previsionali"
+            parent="ey_contabilita_navi.main_menu"
+            action="ey_contabilita_navi_previsionale_contratto_action"
+            sequence="20"
+        />
+
+    </data>
+</odoo>

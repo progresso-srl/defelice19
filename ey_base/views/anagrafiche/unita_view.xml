@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LIST VIEW
+    ══════════════════════════════════════════════════════════════ -->
+    <record id="ey_base_unita_list_view" model="ir.ui.view">
+        <field name="name">ey_base.unita.list</field>
+        <field name="model">ey_base.unita</field>
+        <field name="arch" type="xml">
+            <list string="Unità navali" default_order="riferimento desc">
+                <field name="riferimento"/>
+                <field name="name"/>
+                <field name="tipo_registro_id"/>
+                <field name="nr_on"/>
+                <field name="porto_id"/>
+                <field name="bandiera_id"/>
+                <field name="lunghezza"/>
+                <field name="utilizzo_id"/>
+                <field name="gestione_continuativa" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SEARCH VIEW
+    ══════════════════════════════════════════════════════════════ -->
+    <record id="ey_base_unita_search_view" model="ir.ui.view">
+        <field name="name">ey_base.unita.search</field>
+        <field name="model">ey_base.unita</field>
+        <field name="arch" type="xml">
+            <search string="Cerca unità navale">
+                <field name="name" string="Nome"/>
+                <field name="riferimento"/>
+                <field name="nr_on"/>
+                <field name="imo_nr"/>
+                <field name="mmsi"/>
+                <field name="bandiera_id"/>
+                <field name="porto_id"/>
+                <field name="tipo_registro_id"/>
+                <field name="utilizzo_id"/>
+                <separator/>
+                <filter name="gestione_continuativa" string="Gestione continuativa"
+                        domain="[('gestione_continuativa','=',True)]"/>
+                <filter name="non_in_blacklist" string="Non in blacklist"
+                        domain="[('blacklist','=',False)]"/>
+                <group name="groupby">
+                    <filter name="group_bandiera" string="Bandiera"
+                            context="{'group_by':'bandiera_id'}"/>
+                    <filter name="group_tipo_registro" string="Tipo registro"
+                            context="{'group_by':'tipo_registro_id'}"/>
+                    <filter name="group_utilizzo" string="Utilizzo"
+                            context="{'group_by':'utilizzo_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         FORM VIEW
+    ══════════════════════════════════════════════════════════════ -->
+    <record id="ey_base_unita_form_view" model="ir.ui.view">
+        <field name="name">ey_base.unita.form</field>
+        <field name="model">ey_base.unita</field>
+        <field name="arch" type="xml">
+            <form string="Unità navale">
+                <header>
+                    <!-- placeholder per pulsanti futuri (es. stampa) -->
+                </header>
+                <sheet>
+                    <!-- intestazione -->
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Nome imbarcazione"/></h1>
+                        <div>
+                            <label for="riferimento" class="o_form_label"/>
+                            <field name="riferimento" readonly="1"/>
+                        </div>
+                    </div>
+
+                    <!-- notebook -->
+                    <notebook>
+
+                        <!-- ── TAB: INFO GENERALI ──────────────────── -->
+                        <page string="Info generali" name="info_generali">
+                            <group>
+                                <group>
+                                    <field name="gestione_continuativa"/>
+                                    <field name="porto_id"/>
+                                    <field name="tipo_registro_id"/>
+                                    <field name="imo_nr"/>
+                                    <field name="mmsi"/>
+                                    <field name="lunghezza"/>
+                                    <field name="lunghezza_mt"/>
+                                    <field name="stazza_lorda"/>
+                                    <field name="dislocamento"/>
+                                    <field name="abbr_tipo_id"/>
+                                    <field name="tipo_unita_id"/>
+                                    <field name="propulsione_id"/>
+                                    <field name="nr_max_persone_trasportabili"/>
+                                </group>
+                                <group>
+                                    <field name="bandiera_id"/>
+                                    <field name="nr_on"/>
+                                    <field name="utilizzo_id"/>
+                                    <field name="nominativo_interno"/>
+                                    <field name="hin_cin"/>
+                                    <field name="lunghezza_galleggiamento"/>
+                                    <field name="pescaggio"/>
+                                    <field name="stazza_netta"/>
+                                    <field name="portata_max_kg"/>
+                                    <field name="limite_navigazione_id"/>
+                                    <field name="anno_costruzione"/>
+                                    <field name="tab_min_arm"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="soggetto_fatturazione_id"/>
+                            </group>
+
+                            <notebook>
+                                <!-- ── SOTTO-TAB: PROPRIETARI ──────── -->
+                                <page string="Proprietari" name="proprietari">
+                                    <field name="proprietario_ids" nolabel="1">
+                                        <list editable="bottom">
+                                            <field name="partner_id" domain="[('armatore_proprietario','=',True)]" context="{'default_armatore_proprietario': True}"/>
+                                            <field name="identificatore"/>
+                                            <field name="data_inizio"/>
+                                            <field name="data_fine"/>
+                                            <field name="carati"/>
+                                            <field name="riferimento"/>
+                                        </list>
+                                    </field>
+                                </page>
+
+                                <!-- ── SOTTO-TAB: ARMATORI/UTILIZZATORI ──── -->
+                                <page string="Armatori/Utilizzatori" name="armatori">
+                                    <field name="armatore_ids" nolabel="1">
+                                        <list editable="bottom">
+                                            <field name="partner_id" domain="[('armatore_proprietario','=',True)]" context="{'default_armatore_proprietario': True}"/>
+                                            <field name="identificatore"/>
+                                            <field name="data_inizio"/>
+                                            <field name="data_fine"/>
+                                            <field name="riferimento"/>
+                                        </list>
+                                    </field>
+                                </page>
+
+                                <!-- ── SOTTO-TAB: ALTRI SOGGETTI ───── -->
+                                <page string="Altri soggetti" name="rappresentanti">
+                                    <field name="rappresentante_ruolo_ids" nolabel="1">
+                                        <list editable="bottom">
+                                            <field name="rappresentante_id" domain="[('altri_soggetti','=',True)]" context="{'default_altri_soggetti': True}"/>
+                                            <field name="ruolo_id"/>
+                                            <field name="identificatore"/>
+                                            <field name="testo_descrittivo"/>
+                                            <field name="riferimento"/>
+                                        </list>
+                                    </field>
+                                </page>
+
+                                <!-- ── SOTTO-TAB: EQUIPAGGIO ───────── -->
+                                <page string="Equipaggio" name="equipaggio">
+                                    <field name="equipaggio_ids" nolabel="1">
+                                        <list editable="bottom">
+                                            <field name="partner_id"/>
+                                            <field name="identificatore"/>
+                                            <field name="inizio"/>
+                                            <field name="fine"/>
+                                            <field name="data_imbarco"/>
+                                            <field name="data_sbarco"/>
+                                            <field name="ruolo"/>
+                                            <field name="riferimento"/>
+                                        </list>
+                                    </field>
+                                </page>
+
+                                <!-- ── SOTTO-TAB: DATI AMMINISTRATIVI ──── -->
+                                <page string="Dati amministrativi" name="dati_amministrativi">
+                                    <group string="Documenti Amministrativi">
+                                        <field name="doc_amministrativi_ids" nolabel="1">
+                                            <list editable="bottom">
+                                                <field name="name"/>
+                                                <field name="data_inserimento"/>
+                                                <field name="data_documento"/>
+                                                <field name="document" widget="binary" filename="document_fname"/>
+                                                <field name="document_fname" invisible="1"/>
+                                            </list>
+                                        </field>
+                                    </group>
+                                    <group>
+                                        <field name="iva_id"/>
+                                        <field name="periodicita_id"/>
+                                        <field name="importo"/>
+                                    </group>
+                                </page>
+
+                                <!-- ── SOTTO-TAB: GESTIONE PREVIDENZIALE ──── -->
+                                <page string="Gestione" name="gestione">
+                                    <group string="INPS">
+                                        <field name="inps"/>
+                                        <field name="matricola_inps"/>
+                                        <field name="password_inps" password="True"/>
+                                        <field name="sede_inps"/>
+                                    </group>
+                                    <group string="INAIL">
+                                        <field name="inail"/>
+                                        <field name="pam_inail"/>
+                                        <field name="pin_pam_inail" password="True"/>
+                                        <field name="certificato_inail"/>
+                                    </group>
+                                    <group string="FANIMAR">
+                                        <field name="fanimar"/>
+                                        <field name="codice_ditta_fanimar"/>
+                                        <field name="password_fanimar" password="True"/>
+                                        <field name="nr_ass_fanimar"/>
+                                        <field name="nr_deter_fanimar"/>
+                                        <field name="nr_indet_fanimar"/>
+                                        <field name="nr_comand_dir_mach_fanimar"/>
+                                        <field name="nr_ufficiali_fanimar"/>
+                                    </group>
+                                    <group string="Adempimenti fiscali">
+                                        <field name="imposte"/>
+                                        <field name="stipendi"/>
+                                        <field name="fatture"/>
+                                    </group>
+                                </page>
+
+                                <!-- ── SOTTO-TAB: ASSICURAZIONI ────── -->
+                                <page string="Assicurazioni" name="assicurazioni">
+                                    <group>
+                                        <field name="assicurazione_equipaggio"/>
+                                        <field name="assicurazione_rc_terzi"/>
+                                        <field name="assicurazione_pi"/>
+                                        <field name="assicurazione_hm"/>
+                                        <field name="assicurazione_corpi"/>
+                                        <field name="assicurazione_tender"/>
+                                    </group>
+                                </page>
+
+                                <!-- ── SOTTO-TAB: INFO VARIE ───────── -->
+                                <page string="Info varie" name="info_varie">
+                                    <group>
+                                        <field name="epirb"/>
+                                        <field name="gmdss"/>
+                                        <field name="gest_stazione_radiotel"/>
+                                        <field name="tipo_canone_id"/>
+                                        <field name="porto_base_id"/>
+                                        <field name="ente_sorveglianza_id"/>
+                                    </group>
+                                    <group>
+                                        <field name="ssb"/>
+                                        <field name="nr_componenti_equipaggio"/>
+                                        <field name="societa_concessionaria_id"/>
+                                        <field name="porto_ormeggio_id"/>
+                                        <field name="ente_classifica_id"/>
+                                        <field name="colore_scafo"/>
+                                    </group>
+                                    <field name="blacklist"/>
+                                </page>
+                            </notebook>
+
+                            <group string="Contatti">
+                                <field name="contatto_nave_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                        <field name="tipo_id"/>
+                                        <field name="phone"/>
+                                        <field name="cellulare"/>
+                                        <field name="email"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <group string="Ulteriori recapiti">
+                                <field name="ulteriore_recapito_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="tipo_id"/>
+                                        <field name="indirizzo"/>
+                                        <field name="city"/>
+                                        <field name="zip"/>
+                                        <field name="provincia"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <group>
+                                <field name="note"/>
+                            </group>
+                        </page>
+
+                        <!-- ── TAB: CERTIFICATI DI BORDO ─────────── -->
+                        <page string="Cert. di bordo" name="certificati_bordo">
+                            <field name="certificato_bordo_ids">
+                                <list>
+                                    <field name="tipo_id"/>
+                                    <field name="identificatore"/>
+                                    <field name="numero_documento"/>
+                                    <field name="ente_id"/>
+                                    <field name="data_rilascio"/>
+                                    <field name="data_scadenza"/>
+                                    <field name="data_preavviso"/>
+                                    <field name="attivo" widget="boolean_toggle"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="tipo_id"/>
+                                        <field name="identificatore"/>
+                                        <field name="numero_documento"/>
+                                        <field name="ente_id"/>
+                                        <field name="luogo_rilascio"/>
+                                        <field name="data_rilascio"/>
+                                        <field name="data_scadenza"/>
+                                        <field name="data_preavviso"/>
+                                        <field name="attivo"/>
+                                    </group>
+                                    <group string="Allegato">
+                                        <field name="document" widget="binary" filename="document_fname"/>
+                                        <field name="document_fname" invisible="1"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+
+                        <!-- ── TAB: SCHEDA TECNICA ───────────────── -->
+                        <page string="Scheda tecnica" name="scheda_tecnica">
+                            <group string="Info generali">
+                                <field name="modello"/>
+                                <field name="costruttore_id"/>
+                                <field name="materiale_costruzione_id"/>
+                                <field name="anno_costruzione"/>
+                                <field name="id_cantiere"/>
+                                <field name="ente_id"/>
+                                <field name="classe"/>
+                                <field name="compliance"/>
+                                <field name="rnc"/>
+                                <field name="immersione_massima"/>
+                                <field name="immersione_minima"/>
+                                <field name="altezza"/>
+                                <field name="autonomia_miglia"/>
+                                <field name="velocita_crociera"/>
+                                <field name="max_nodi"/>
+                                <field name="max_ospiti"/>
+                                <field name="progettisti_interni"/>
+                                <field name="progettisti_esterni"/>
+                                <field name="ufficio"/>
+                            </group>
+                            <group string="STED">
+                                <field name="sted_nr_dci"/>
+                                <field name="sted_data_dci"/>
+                                <field name="sted_ente_rilascio"/>
+                            </group>
+                            <group string="Motorizzazione">
+                                <field name="numero_motori"/>
+                                <field name="marca_motori"/>
+                                <field name="motori_modello"/>
+                                <field name="kw_motori"/>
+                                <field name="alimentazione"/>
+                                <field name="trasmissione"/>
+                                <field name="invertitori"/>
+                                <field name="ore_navigazione"/>
+                                <field name="consumo_orario"/>
+                                <field name="numero_alberi_mq"/>
+                                <field name="superficie_velica_mq"/>
+                            </group>
+                            <field name="motore_nave_ids">
+                                <list editable="bottom" string="Dettaglio motori">
+                                    <field name="modello"/>
+                                    <field name="numero_serie"/>
+                                    <field name="anno_costr"/>
+                                </list>
+                            </field>
+                            <group string="Generatori">
+                                <field name="generatori_marca"/>
+                                <field name="generatori_modello"/>
+                                <field name="generatori_potenza"/>
+                                <field name="generatori_volts"/>
+                                <field name="generatori_fasi"/>
+                                <field name="generatori_frequenza"/>
+                            </group>
+                            <group string="Batterie principali">
+                                <field name="nr_batterie_principali"/>
+                                <field name="volts_batterie_principali"/>
+                                <field name="ah_batterie_principali"/>
+                            </group>
+                            <group string="Batterie generatori">
+                                <field name="nr_batterie_generatori"/>
+                                <field name="volts_batterie_generatori"/>
+                                <field name="ah_batterie_generatori"/>
+                            </group>
+                            <group string="Batterie servizi / emergenza">
+                                <field name="nr_batterie_servizi"/>
+                                <field name="volts_batterie_servizi"/>
+                                <field name="ah_batterie_servizi"/>
+                                <field name="nr_batterie_emergenza"/>
+                                <field name="volts_batterie_emergenza"/>
+                                <field name="ah_batterie_emergenza"/>
+                            </group>
+                            <group string="Macchinari ausiliari">
+                                <field name="volts_alimentazione_terra"/>
+                                <field name="fasi_alimentazione_terra"/>
+                                <field name="frequenza_alimentazione_terra"/>
+                                <field name="sep_olio_marca"/>
+                                <field name="sep_olio_modello"/>
+                                <field name="dep_carburante_marca"/>
+                                <field name="dep_carburante_modello"/>
+                                <field name="save_system_marca"/>
+                                <field name="save_system_modello"/>
+                                <field name="elica_prua_marca"/>
+                                <field name="elica_prua_modello"/>
+                                <field name="dissalatore_marca"/>
+                                <field name="dissalatore_modello"/>
+                                <field name="ac_marca"/>
+                                <field name="ac_modello"/>
+                            </group>
+                            <group string="Capacità casse">
+                                <field name="litri_carburante"/>
+                                <field name="litri_acqua"/>
+                                <field name="litri_olio_lubr"/>
+                                <field name="litri_olio_esausto"/>
+                            </group>
+                            <group string="Info commerciali">
+                                <field name="currency_id" invisible="1"/>
+                                <field name="prezzo_richiesto_vendita"/>
+                                <field name="prezzo_richiesto_noleggio"/>
+                                <field name="iva_assolta"/>
+                            </group>
+                            <field name="note_scheda_tecnica" placeholder="Note scheda tecnica…"/>
+                        </page>
+
+                        <!-- ── TAB: APPARATI ELETTRONICI ─────────── -->
+                        <page string="App. navigaz." name="apparati">
+                            <field name="apparato_elettronico_ids">
+                                <list editable="bottom">
+                                    <field name="tipo_id"/>
+                                    <field name="marca_id"/>
+                                    <field name="modello"/>
+                                    <field name="caratteristiche"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- ── TAB: ADEMPIMENTI ───────────────────── -->
+                        <page string="Adempimenti" name="adempimenti">
+                            <field name="adempimenti" widget="many2many_tags"/>
+                        </page>
+
+                        <!-- ── TAB: STORICI ───────────────────────── -->
+                        <page string="Storico" name="storici">
+                            <separator string="Storico nomi"/>
+                            <field name="storico_nome_ids">
+                                <list editable="bottom">
+                                    <field name="nome"/>
+                                    <field name="data_inizio"/>
+                                    <field name="data_fine"/>
+                                </list>
+                            </field>
+                            <separator string="Storico porti iscrizione"/>
+                            <field name="storico_porto_ids">
+                                <list editable="bottom">
+                                    <field name="porto_id"/>
+                                    <field name="data_inizio"/>
+                                    <field name="data_fine"/>
+                                </list>
+                            </field>
+                            <separator string="Storico Nr. / O.N."/>
+                            <field name="storico_nr_on_ids">
+                                <list editable="bottom">
+                                    <field name="nr_on"/>
+                                    <field name="data_inizio"/>
+                                    <field name="data_fine"/>
+                                </list>
+                            </field>
+                            <separator string="Storico bandiere"/>
+                            <field name="storico_bandiera_ids">
+                                <list editable="bottom">
+                                    <field name="bandiera_id"/>
+                                    <field name="data_inizio"/>
+                                    <field name="data_fine"/>
+                                </list>
+                            </field>
+                        </page>
+
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ACTION
+    ══════════════════════════════════════════════════════════════ -->
+    <record id="action_ey_base_unita" model="ir.actions.act_window">
+        <field name="name">Unità navali</field>
+        <field name="res_model">ey_base.unita</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="ey_base_unita_search_view"/>
+    </record>
+
+</odoo>

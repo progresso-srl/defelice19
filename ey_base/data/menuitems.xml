@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root menu -->
+    <menuitem id="menu_ey_base_root"
+              name="E-Yacht"
+              sequence="50"
+              web_icon="ey_base,static/description/icon.png"/>
+
+    <!-- Anagrafiche -->
+    <menuitem id="menu_ey_base_anagrafiche"
+              name="Anagrafiche"
+              parent="menu_ey_base_root"
+              sequence="10"/>
+
+    <menuitem id="menu_ey_base_unita"
+              name="Unità navali"
+              parent="menu_ey_base_anagrafiche"
+              action="action_ey_base_unita"
+              sequence="10"/>
+
+    <menuitem id="menu_ey_base_armatore_proprietario"
+              name="Armatori / Proprietari"
+              parent="menu_ey_base_anagrafiche"
+              action="action_ey_base_armatore_proprietario"
+              sequence="20"/>
+
+    <menuitem id="menu_ey_base_altri_soggetti"
+              name="Altri soggetti"
+              parent="menu_ey_base_anagrafiche"
+              action="action_ey_base_altri_soggetti"
+              sequence="30"/>
+
+    <menuitem id="menu_ey_base_adempimenti"
+              name="Adempimenti"
+              parent="menu_ey_base_anagrafiche"
+              action="action_ey_base_adempimento_nave"
+              sequence="40"/>
+
+    <menuitem id="menu_ey_base_agenda"
+              name="Agenda"
+              parent="menu_ey_base_root"
+              sequence="20"/>
+
+    <menuitem id="menu_ey_base_agenda_nave"
+              name="Scadenze navi"
+              parent="menu_ey_base_agenda"
+              action="action_ey_base_agenda_nave"
+              sequence="10"/>
+
+    <!-- NON portato: in v12 le tabelle di lookup (porto, tipo_registro, utilizzo_nave,
+         tipo_unita, ente_sorveglianza, ruolo_rappresentante, tipo_cert_bordo) non hanno
+         nessun menu dedicato: si gestiscono solo tramite i popup "Crea e modifica" sui
+         campi Many2one che le referenziano. Le action/viste restano definite in
+         views/anagrafiche/lookup_views.xml per quell'uso, ma senza menu proprio, per
+         restare fedeli a v12 (che non ha alcun menu "Configurazione" in E-Yacht). -->
+
+</odoo>

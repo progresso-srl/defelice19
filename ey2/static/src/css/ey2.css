@@ -1,0 +1,47 @@
+table.oe_list_content th, table.oe_list_content td {
+    text-align: center !important;
+}
+
+.openerp .oe_list_content td.oe_number {
+    text-align: center !important;
+    max-width: 100px;
+}
+
+/*.openerp .oe_list_content td.oe_number.oe_list_field_monetary {
+    text-align: right !important;
+}*/
+
+/***********+ tree costi dei corsi ******/
+.ey_tree_costi table th[data-id="descrizione_id"] {
+    width: 75%;
+}
+
+/*********** tree servizi per utente **********/
+.ey_tree_servizi_marittimo table th[data-id="name"] {
+    width: 45%;
+}
+
+span[data-fieldname="scadenzario"] {
+    text-align: center;
+}
+
+/****************** SHEET A 1124 PX ************************ */
+.openerp .oe_form_sheet_width {
+    max-width: 1300px;
+}
+
+.openerp .oe_form_sheetbg {
+    padding: 16px;
+}
+
+.openerp .oe_form div.oe_chatter {
+    max-width: 100%;
+}
+
+.openerp .oe_followers {
+    width: 250px;
+}
+
+.openerp .oe_record_thread {
+    margin-right: 293px;
+}

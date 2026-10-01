@@ -1,0 +1,3 @@
+import add_soggetto_pratica
+import add_soggetto_pratica_soggetto
+import crea_prossimo_previsionale

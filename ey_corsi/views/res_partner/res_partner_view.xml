@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SEARCH VIEW
+    ══════════════════════════════════════════════════════════════ -->
+    <record id="ey_corsi_res_partner_filter" model="ir.ui.view">
+        <field name="name">ey_corsi.res.partner.select</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <search position="inside">
+                <field name="cognome"/>
+                <field name="nome"/>
+                <field name="id"/>
+                <field name="iami_cid"/>
+                <field name="codice_unico"/>
+                <field name="nazionalita_id"/>
+                <field name="luogo_nascita_id"/>
+                <field name="territorialita"/>
+                <field name="qualifica_id"/>
+                <filter name="filter_maschi" string="Maschi" domain="[('sesso','=','m')]"/>
+                <filter name="filter_femmine" string="Femmine" domain="[('sesso','=','f')]"/>
+                <filter name="is_anag_ey" string="Marittimo/Corsista" domain="[('anagrafica_ey','=',True)]"/>
+                <filter name="is_personale_ey" string="Personale docente" domain="[('personale_ey','=',True)]"/>
+                <filter name="filter_coniuge" string="Con coniuge a carico" domain="[('coniuge_a_carico','=',True)]"/>
+                <filter name="filter_figli" string="Con figli a carico" domain="[('figli_a_carico','&gt;',0)]"/>
+                <filter name="filter_doppia_qualifica" string="Doppia qualifica" domain="[('doppia_qualifica','=',True)]"/>
+                <filter name="filter_esperienza_vela" string="Esperienza vela" domain="[('esperienza_vela','=',True)]"/>
+                <filter name="filter_imbarcato" string="Imbarcato" domain="[('imbarcato','=',True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LIST VIEW
+    ══════════════════════════════════════════════════════════════ -->
+    <record id="ey_corsi_res_partner_list" model="ir.ui.view">
+        <field name="name">ey_corsi.res.partner.list</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <field name="complete_name" position="replace">
+                <field name="cognome"/>
+                <field name="nome"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         FORM VIEW
+         Ricalca fedelmente la struttura del form v12: header con
+         cognome/nome al posto del nome, campo "id" mostrato come
+         CODICE UNIVOCO, un tab "Documenti" e un tab "E-Yacht" con
+         notebook annidato (stessa gerarchia di v12).
+    ══════════════════════════════════════════════════════════════ -->
+    <record id="ey_corsi_res_partner_form" model="ir.ui.view">
+        <field name="name">ey_corsi.res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Header: cognome/nome al posto del nome, IAMI CID e codice (id) -->
+            <h1 class="mb-0 w-md-75" position="replace">
+                <h1 class="mb-0 w-md-75">
+                    <table>
+                        <tr>
+                            <td>
+                                <field name="cognome" class="oe_inline" placeholder="Cognome (rag. sociale)"/>
+                            </td>
+                            <td>
+                                <field name="nome" class="oe_inline" placeholder="Nome"
+                                       invisible="is_company" required="not is_company"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <div invisible="not anagrafica_ey">
+                        <label for="iami_cid" string="IAMI CID" class="oe_inline"/>
+                        <field name="iami_cid" class="oe_inline"/>
+                    </div>
+                    <div invisible="not anagrafica_ey">
+                        <label for="id" string="Codice univoco" class="oe_inline"/>
+                        <field name="id" class="oe_inline" string="Codice univoco" readonly="1"/>
+                    </div>
+                </h1>
+            </h1>
+
+            <field name="parent_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+
+            <field name="function" position="replace"/>
+
+            <field name="website" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="website" position="after">
+                <field name="luogo_nascita_id"/>
+                <field name="nazionalita_id"/>
+                <field name="territorialita"/>
+                <field name="figli_a_carico"/>
+            </field>
+
+            <field name="category_id" position="after">
+                <field name="sesso"/>
+                <field name="data_nascita"/>
+                <field name="stato_civile"/>
+                <field name="coniuge_a_carico"/>
+            </field>
+
+            <span name="address_name" position="before">
+                <field name="anagrafica_ey"/>
+                <field name="personale_ey"/>
+            </span>
+
+            <notebook colspan="4" position="before">
+                <group>
+                    <field name="document" filename="document_fname" invisible="anagrafica_ey"/>
+                    <field name="document_fname" invisible="1"/>
+                </group>
+                <group string="Documenti Amministrativi">
+                    <field name="doc_partner_ids" nolabel="1">
+                        <list editable="bottom">
+                            <field name="name"/>
+                            <field name="data_inserimento"/>
+                            <field name="data_documento"/>
+                            <field name="document" widget="binary" filename="document_fname"/>
+                            <field name="document_fname" invisible="1"/>
+                        </list>
+                    </field>
+                </group>
+                <group string="Altri recapiti">
+                    <field name="contatto_extra_ids" nolabel="1">
+                        <list editable="bottom">
+                            <field name="tipo_id"/>
+                            <field name="dettaglio"/>
+                            <field name="contatto"/>
+                            <field name="priority"/>
+                        </list>
+                    </field>
+                </group>
+            </notebook>
+
+            <page name="internal_notes" position="before">
+                <page string="Documenti" name="ey_corsi_documenti">
+                    <field name="documento_ids">
+                        <list editable="bottom">
+                            <field name="tipo_id"/>
+                            <field name="ufficio_id"/>
+                            <field name="numero_documento"/>
+                            <field name="luogo_rilascio"/>
+                            <field name="data_rilascio"/>
+                            <field name="data_scadenza"/>
+                            <field name="attivo" widget="boolean_toggle"/>
+                            <field name="document" widget="binary" filename="document_fname"/>
+                            <field name="document_fname" invisible="1"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="E-Yacht" name="ey_corsi_e_yacht">
+                    <group>
+                        <field name="codice_unico"/>
+                    </group>
+                    <notebook>
+                        <page string="Recapiti d'emergenza" name="ey_recapiti_emergenza">
+                            <field name="altro_recapito_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="grado_parentela"/>
+                                    <field name="telefono_principale"/>
+                                    <field name="telefono_secondario"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Corsi" name="ey_corsi_tab">
+                            <field name="iscrizione_ids">
+                                <list>
+                                    <field name="corso_id"/>
+                                    <field name="data_inizio_corso"/>
+                                    <field name="data_fine_corso"/>
+                                    <field name="corso_superato"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Certificati" name="ey_certificati_tab">
+                            <notebook>
+                                <page string="Interni" name="interni">
+                                    <field name="certificati_interni" readonly="1">
+                                        <list create="false" delete="false" decoration-danger="scaduto == True">
+                                            <field name="esame_id"/>
+                                            <field name="numero_sequenza" readonly="1"/>
+                                            <field name="data_rilascio"/>
+                                            <field name="data_scadenza"/>
+                                            <field name="document" widget="binary" filename="document_fname"/>
+                                            <field name="document_fname" invisible="1"/>
+                                            <field name="scaduto" column_invisible="1"/>
+                                        </list>
+                                    </field>
+                                </page>
+                                <page string="Rilasciati da ente terzo" name="esterni">
+                                    <field name="certificati">
+                                        <list editable="bottom" decoration-danger="scaduto == True">
+                                            <field name="descrizione_id" options="{'no_quick_create': True}"/>
+                                            <field name="ente_certificati_id"/>
+                                            <field name="data_rilascio"/>
+                                            <field name="data_scadenza" readonly="id"/>
+                                            <field name="attivo"/>
+                                            <field name="document" widget="binary" filename="document_fname"/>
+                                            <field name="document_fname" invisible="1"/>
+                                            <field name="scaduto" column_invisible="1"/>
+                                        </list>
+                                    </field>
+                                </page>
+                            </notebook>
+                        </page>
+                        <page string="Corsi superati" name="corsi_superati">
+                            <field name="attestato_frequenza_ids" readonly="1">
+                                <list create="false" delete="false" decoration-danger="scaduto == True">
+                                    <field name="corso_id"/>
+                                    <field name="data_rilascio"/>
+                                    <field name="data_scadenza"/>
+                                    <field name="scaduto" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Curriculum" name="curriculum">
+                            <group string="Info lavoro">
+                                <group>
+                                    <field name="qualifica_id"/>
+                                    <field name="settore_id"/>
+                                </group>
+                                <group>
+                                    <field name="esperienza_vela"/>
+                                    <field name="doppia_qualifica"/>
+                                    <field name="imbarcato"/>
+                                </group>
+                            </group>
+                            <field name="esperienza_precedente_ids">
+                                <list editable="bottom">
+                                    <field name="qualifica_id"/>
+                                    <field name="unita_id"/>
+                                    <field name="bandiera_id"/>
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Servizi" name="servizi">
+                            <field name="servizio_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="inizio_servizio"/>
+                                    <field name="fine_servizio"/>
+                                    <field name="scadenzario"/>
+                                    <field name="costo"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Mail e Privacies" name="mail_privacies">
+                            <group string="Privacies">
+                                <field name="privacy_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="data_inizio"/>
+                                        <field name="data_scadenza"/>
+                                        <field name="document" widget="binary" filename="document_fname"/>
+                                        <field name="document_fname" invisible="1"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <group string="Mailing lists">
+                                <field name="mailing_list_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="data_inizio"/>
+                                        <field name="data_scadenza"/>
+                                        <field name="document" widget="binary" filename="document_fname"/>
+                                        <field name="document_fname" invisible="1"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+                    </notebook>
+                </page>
+            </page>
+
+            <page name="internal_notes" position="inside">
+                <group>
+                    <group>
+                        <field name="blacklist"/>
+                    </group>
+                    <group>
+                        <field name="dislessia"/>
+                    </group>
+                </group>
+            </page>
+
+        </field>
+    </record>
+
+    <!-- MARITTIMI -->
+    <record id="action_ey_corsi_marittimi" model="ir.actions.act_window">
+        <field name="name">Marittimi</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_is_anag_ey': 1, 'default_anagrafica_ey': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Clicca qui per inserire nuovi marittimi.
+            </p>
+        </field>
+    </record>
+
+    <!-- PERSONALE DOCENTE -->
+    <record id="action_ey_corsi_personale_docente" model="ir.actions.act_window">
+        <field name="name">Personale docente</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_is_personale_ey': 1, 'default_personale_ey': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Clicca qui per inserire nuovi istruttori.
+            </p>
+        </field>
+    </record>
+
+</odoo>

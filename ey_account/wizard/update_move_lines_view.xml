@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="wizard_view" model="ir.ui.view">
+            <field name="name">Update move lines</field>
+            <field name="model">ey_account.wiz_update_move_lines</field>
+            <field name="arch" type="xml">
+                <form string="Update move lines">
+                    <h3>
+                        Aggiorna le linee delle registrazioni contabili nelle quali manca codice iva e importo
+                    </h3>
+                    <footer>
+                        <button string="Update move lines" name="update_lines" type="object" class="oe_highlight"/>
+                        <button string="Annulla" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>
