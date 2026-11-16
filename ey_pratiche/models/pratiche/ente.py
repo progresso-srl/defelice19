@@ -4,18 +4,21 @@ from odoo import api, fields, models
 
 class SedeEnte(models.Model):
     _name = "ey_pratiche.sede_ente"
+    _description = "Sede ente"
 
     name = fields.Char(string="Sede", index=True, required=True)
 
 
 class UfficioEnte(models.Model):
     _name = "ey_pratiche.ufficio_ente"
+    _description = "Ufficio ente"
 
     name = fields.Char(string="Ufficio", index=True, required=True)
     code = fields.Char(string="Codice", index=True)
 
 class Ente(models.Model): #TODO##### CAPIRE A COSA SERVE, DATO CHE POI CI SARA ENTE_PRATICA CHE PUNTA A QUESTO, PROBABILMENTE è IL SOLITO ENTE RIGUARDANTE LE PRATICHE, MA QUESTO NON é CONGELATO, MENTRE ENTE PRATICA SI
     _name = "ey_pratiche.ente"
+    _description = "Ente"
 
     @api.depends('denominazione', 'sede_id', 'sede_id.name')
     def _compute_name(self):
@@ -46,6 +49,7 @@ class Ente(models.Model): #TODO##### CAPIRE A COSA SERVE, DATO CHE POI CI SARA E
 ###############################################################################à
 class EntePratica(models.Model):
     _name = "ey_pratiche.ente_pratica"
+    _description = "Ente pratica"
     _rec_name = "denominazione"
 
     # utility
@@ -75,7 +79,6 @@ class EntePratica(models.Model):
         for ep in self:
             return {
                 'type': 'ir.actions.act_window',
-                'view_type': 'form',
                 'view_mode': 'form',
                 'res_model': 'ey_pratiche.ente',
                 'res_id': ep.partner_id.id,
@@ -92,8 +95,12 @@ class EntePratica(models.Model):
     indirizzo_id = fields.Many2one("ey_pratiche.indirizzo_partner", string="Indirizzo")
     fiscalcode = fields.Char(string="Cod. Fiscale")
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
+        # Odoo 19: create riceve sempre una lista; la logica resta per record.
+        return self.browse().concat(*(self._ey_create_one(vals) for vals in vals_list))
+
+    def _ey_create_one(self, vals):
         ente_pratica = super(EntePratica, self).create(vals)
         ente = ente_pratica.partner_id
         write_vals = {

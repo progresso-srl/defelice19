@@ -8,6 +8,7 @@ import time
 
 class ContrattoNave(models.Model):
     _name = "ey_contabilita_navi.contratto_nave"
+    _description = "Contratto nave"
 
     _MESI = [
         ('01', 'Gennaio'),
@@ -30,8 +31,7 @@ class ContrattoNave(models.Model):
                 'name': 'Mostra preventivi',
                 'type': 'ir.actions.act_window',
                 'res_model': 'ey_contabilita_navi.previsionale_contratto',
-                'view_type': 'form',
-                'view_mode': 'tree,form',
+                'view_mode': 'list,form',
                 'domain': [('contratto_id', '=', self.id)],
             }
 
@@ -40,7 +40,6 @@ class ContrattoNave(models.Model):
             return {
                 'type': 'ir.actions.act_window',
                 'res_model': 'ey_contabilita_navi.wiz_crea_prossimo_previsionale',
-                'view_type': 'form',
                 'view_mode': 'form',
                 'target': 'new',
                 'context': {'default_contratto_id': self.id}
@@ -71,8 +70,9 @@ class ContrattoNave(models.Model):
 
     @api.model
     def _default_currency(self):
-        currency = self.env['res.currency'].search([('name', '=', 'EUR')], limit=1)
-        return currency.id
+        # Prima era "EUR" cercato per nome: se la valuta non e' attiva il campo
+        # (obbligatorio) restava vuoto. La valuta della societa' c'e' sempre.
+        return self.env.company.currency_id.id
 
     name = fields.Char(string="Contratto", store=True)
     nome_contratto = fields.Char(string="Nome contratto", required=True)
@@ -93,8 +93,12 @@ class ContrattoNave(models.Model):
     previsionale_ids = fields.One2many("ey_contabilita_navi.previsionale_contratto", "contratto_id", string="Previsionali")
     documento_ids = fields.One2many("ey_contabilita_navi.documenti_contratto", "contratto_id", string="Documenti")
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
+        # Odoo 19: create riceve sempre una lista; la logica resta per record.
+        return self.browse().concat(*(self._ey_create_one(vals) for vals in vals_list))
+
+    def _ey_create_one(self, vals):
         sequence = self.env['ir.sequence'].next_by_code('ey_contabilita_navi.nome_contratto')
         vals['name'] = sequence + ' - ' + vals['nome_contratto']
 
@@ -104,6 +108,7 @@ class ContrattoNave(models.Model):
 
 class PeriodoContratto(models.Model):
     _name = "ey_contabilita_navi.periodo_contratto"
+    _description = "Periodo contratto"
 
     @api.depends('mesi')
     def _compute_name(self):
@@ -121,8 +126,12 @@ class PeriodoContratto(models.Model):
     name = fields.Char(string="Periodo", compute="_compute_name", index=True, store=True)
     mesi = fields.Integer(string="Mesi", required=True)
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
+        # Odoo 19: create riceve sempre una lista; la logica resta per record.
+        return self.browse().concat(*(self._ey_create_one(vals) for vals in vals_list))
+
+    def _ey_create_one(self, vals):
         if 'mesi' not in vals or vals['mesi'] < 1:
             raise ValidationError("Numero mesi non può essere 0 o negativo")
         return super(PeriodoContratto, self).create(vals)
@@ -130,53 +139,14 @@ class PeriodoContratto(models.Model):
 
 class DocumentiContratto(models.Model):
     _name = "ey_contabilita_navi.documenti_contratto"
-
-    ##### FUNZIONI PER IL SET E IL GET DEL BINARY
-    def _get_document(self):
-        ids = []
-        for rec in self:
-            ids.append(rec.id)
-        ir_attachment_model = self.env['ir.attachment']
-        domain_attachment = [('res_model', '=', self._name), ('res_id', 'in', ids)]
-        attachments = ir_attachment_model.search(domain_attachment)
-        for att in attachments:
-            for rec in self:
-                if rec.id == att.res_id:
-                    rec.document = att.datas
-                    break
-
-    def _set_document(self):
-        self.ensure_one()
-        max_id = 0
-        cr = self._cr
-        cr.execute("SELECT max(id) AS id FROM ey_corsi_documento_corso")
-        dati = cr.dictfetchone()
-        if dati['id']:
-            max_id = int(dati['id']) + 1
-        else:
-            max_id = 1
-        ir_attachment_model = self.env['ir.attachment']
-        dati = {
-            'name': 'documenti_contratto_' + str(max_id),
-            'datas_fname': 'documenti_contratto_' + str(max_id),
-            'res_model': self._name,
-            'res_id': self.id,
-            'datas': self.document
-        }
-        attachments = ir_attachment_model.search([('res_model', '=', self._name), ('res_id', '=', self.id)])
-        if attachments and not self.document:
-            return attachments.unlink()
-        if attachments:
-            return attachments.write(dati)
-        else:
-            return ir_attachment_model.create(dati)
+    _description = "Documenti contratto"
+    _inherit = ["ey_base.documento_allegato_mixin"]
+    _ey_document_prefix = "documenti_contratto"
 
     #####COLUMNS
     descrizione = fields.Char(string="Descrizione", required=True, index=True)
     data_inserimento = fields.Date(string="Data inserimento", default=lambda *a: time.strftime('%Y-%m-%d'))
     data_documento = fields.Date(string="Data documento")
-    document = fields.Binary(compute="_get_document", inverse="_set_document", string="Documento")
-    document_fname = fields.Char(string="File name")
 
     # CAMPI MANY2ONE
     contratto_id = fields.Many2one("ey_contabilita_navi.contratto_nave", index=True)
@@ -185,5 +155,6 @@ class DocumentiContratto(models.Model):
 
 class TipoDocumento(models.Model):
     _name = "ey_contabilita_navi.tipo_documento"
+    _description = "Tipo documento"
 
     name = fields.Char(string="Tipo", required=True, index=True)

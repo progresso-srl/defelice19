@@ -20,6 +20,10 @@ MODELS = (
     ('ey_contabilita_navi', 'ey_contabilita_navi.documenti_contratto', {'manager': (1, 1, 1, 1), 'user': (1, 0, 0, 0)}),
     ('ey_contabilita_navi', 'ey_contabilita_navi.tipo_documento', {'manager': (1, 1, 1, 1), 'user': (1, 0, 0, 0)}),
     ('ey_contabilita_navi', 'ey_contabilita_navi.anticipi_armatore', {'manager': (1, 1, 1, 1), 'user': (1, 0, 0, 0)}),
+    # wizard: da Odoo 17 anche i TransientModel vogliono i diritti d'accesso
+    ('ey_contabilita_navi', 'ey_contabilita_navi.wiz_crea_prossimo_previsionale', {'manager': (1, 1, 1, 1), 'user': (1, 1, 1, 1)}),
+    ('ey_contabilita_navi', 'ey_contabilita_navi.wiz_collega_linea_spesa_nave', {'manager': (1, 1, 1, 1), 'user': (1, 1, 1, 1)}),
+    ('ey_contabilita_navi', 'ey_contabilita_navi.wiz_collega_linea_spesa_armatore', {'manager': (1, 1, 1, 1), 'user': (1, 1, 1, 1)}),
 )
 
 # Lista di ruoli

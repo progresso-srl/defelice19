@@ -4,6 +4,7 @@ from odoo.exceptions import ValidationError
 
 class WizCreaProssimoPrevisionale(models.TransientModel):
     _name = "ey_contabilita_navi.wiz_crea_prossimo_previsionale"
+    _description = "Wiz crea prossimo previsionale"
 
     def _calcola_prossimo_periodo(self):
         if not self.contratto_id.previsionale_ids:
@@ -58,7 +59,6 @@ class WizCreaProssimoPrevisionale(models.TransientModel):
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'ey_contabilita_navi.previsionale_contratto',
-            'view_type': 'form',
             'view_mode': 'form',
             'target': 'current',
             'res_id': previsionale.id,

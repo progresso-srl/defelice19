@@ -66,7 +66,8 @@
                     <table>
                         <tr>
                             <td>
-                                <field name="cognome" class="oe_inline" placeholder="Cognome (rag. sociale)"/>
+                                <field name="cognome" class="oe_inline" placeholder="Cognome (rag. sociale)"
+                                       required="type == 'contact'"/>
                             </td>
                             <td>
                                 <field name="nome" class="oe_inline" placeholder="Nome"

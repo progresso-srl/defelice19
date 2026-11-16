@@ -66,4 +66,20 @@ odoo-bin -c odoo19.conf -u ey_pratiche --stop-after-init
 ```
 
 ## Stato
-✅ Migrazione completata con successo
+La migrazione del modulo installa su Odoo 19, ma restano aperti i punti qui
+sotto. Il codice Odoo 8 di riferimento è in `legacy/ey2`; i file Odoo 8 che
+erano in questo modulo (`models/old`, `views/old`, `norm_ODOO8.xml`) e la
+bozza dei report py3o (`views/report_TODO`) sono in `legacy/ey_pratiche`.
+
+## Da fare
+Prima stava in `TODO/todo.txt`.
+
+- Come funzionano i referenti pratica? Quando si inseriscono partner o nave?
+- Cercare tutti i nomi dei vecchi modelli su Odoo 8 e vedere se ci sono
+  altre cose da aggiungere (viste, cron, ecc.).
+- Nelle funzioni dei modelli che hanno `pratica_id` ricontrollare nel codice
+  Odoo 8 se faceva distinzioni tra pratiche navi e pratiche soggetti.
+- Controllare tutti i valori delle selection di Odoo 8 quando vengono usati
+  nel codice vecchio.
+- Report py3o: in Odoo 8 alla creazione della pratica veniva impostato il
+  parser; va rifatto su `py3o.report` (vedi TODO in `pratica.py`).

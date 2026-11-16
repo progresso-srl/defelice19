@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'ey_corsi',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.0.1',
     'summary': 'E-Yacht — Corsi ed esami per il personale marittimo',
-    'category': 'Uncategorized',
+    'category': 'Services',
     'author': 'Progresso SRL',
-    'website': '#',
+    'website': 'https://www.progresso.srl',
     'depends': ['base', 'account', 'ey_base'],
     # NOTA: 'report_py3o' non serve più (sostituito da report QWeb, Step 12).
     # 'account_financial_report' e 'l10n_it_vat_registries' (OCA) non sono
@@ -36,6 +36,7 @@
         'data/menuitems.xml',
     ],
     'license': 'AGPL-3',
+    'post_init_hook': 'post_init_hook',
     'installable': True,
     'application': False,
     'auto_install': False,

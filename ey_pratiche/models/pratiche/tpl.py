@@ -5,10 +5,9 @@ from odoo.exceptions import ValidationError
 
 class Tpl(models.Model):
     _name = "ey_pratiche.tpl"
+    _description = "Template pratica"
     
-    _sql_constraints = [
-        ('name_unique', 'unique(name)', 'Nome già utilizzato!')
-    ]
+    _name_unique = models.Constraint('unique(name)', 'Nome già utilizzato!')
 
 
     name = fields.Char(string="Argomento", index=True, required=True)
@@ -95,7 +94,7 @@ class Tpl(models.Model):
    
     stato_template = fields.Selection(_STATO_TEMPLATE, string="Stato", index=True, required=True,
                                       default="attivo")
-    tipo_pratica = fields.Selection(_TIPO_PRATICA, String="Tipo pratica", index=True, required=True)
+    tipo_pratica = fields.Selection(_TIPO_PRATICA, string="Tipo pratica", index=True, required=True)
     info_operatore = fields.Text(string="Info operatore")
         
     
@@ -155,8 +154,12 @@ class Tpl(models.Model):
                     
         return result
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
+        # Odoo 19: create riceve sempre una lista; la logica resta per record.
+        return self.browse().concat(*(self._ey_create_one(vals) for vals in vals_list))
+
+    def _ey_create_one(self, vals):
         
         # essendo un campo che diventa readonly in questa casistica, forzo il valore nei vals
         if not 'tipo_pratica' in vals and 'tipo_template' in vals and vals['tipo_template'] == 'soggetti':
@@ -224,6 +227,7 @@ class Tpl(models.Model):
 
 class DocumentoTpl(models.Model):
     _name = "ey_pratiche.documento_tpl"
+    _description = "Documento tpl"
     _order = "priority asc"
     
     _FORMAT = [ #TODO fare delle prove su quali sono i formati validi per py3o
@@ -271,7 +275,6 @@ class DocumentoTpl(models.Model):
         py3o_template = report.py3o_template_id
         return {
                 'type': 'ir.actions.act_window',
-                'view_type': 'form',
                 'view_mode': 'form',
                 'res_model': 'py3o.template',
                 'res_id': py3o_template.id,
@@ -281,6 +284,7 @@ class DocumentoTpl(models.Model):
 
 class ChiaveTpl(models.Model):
     _name = "ey_pratiche.chiave_tpl"
+    _description = "Chiave tpl"
     _order = "priority asc"    
 
     @api.onchange('tipo_chiave')
@@ -298,6 +302,7 @@ class ChiaveTpl(models.Model):
 
 class AllegatoTpl(models.Model):
     _name = "ey_pratiche.allegato_tpl"  
+    _description = "Allegato tpl"
     
     #TODO chiedere conferma che siano modificabili sempre
 

@@ -7,6 +7,7 @@ from datetime import datetime
 
 class PrevisionaleContratto(models.Model):
     _name = "ey_contabilita_navi.previsionale_contratto"
+    _description = "Previsionale contratto"
     _order = "anno_inizio desc, mese_inizio desc"
 
     _MESI = [
@@ -344,10 +345,9 @@ class PrevisionaleContratto(models.Model):
         
     def return_codice_fiscale(self):
         self.ensure_one()
-        if (self.contratto_id.soggetto_riferimento_id.fiscalcode != False) :
-            return "Codice fiscale : " + self.contratto_id.soggetto_riferimento_id.fiscalcode
-        else :
-            return ""
+        # fiscalcode e' di l10n_it_fiscalcode (OCA), non fra le dipendenze
+        codice = getattr(self.contratto_id.soggetto_riferimento_id, 'fiscalcode', False)
+        return "Codice fiscale : " + codice if codice else ""
 
     def return_last_date(self):
         spese = self.spesa_ids
@@ -383,6 +383,7 @@ class PrevisionaleContratto(models.Model):
 
 class SpesaPrevisionale(models.Model):
     _name = "ey_contabilita_navi.spesa_previsionale"
+    _description = "Spesa previsionale"
 
     @api.onchange('tipo_id')
     def onchange_tipo_id(self):
@@ -394,7 +395,6 @@ class SpesaPrevisionale(models.Model):
             return {
                 'type': 'ir.actions.act_window',
                 'res_model': 'account.move',
-                'view_type': 'form',
                 'view_mode': 'form',
                 'target': 'current',
                 'context': {'default_collegamento_linea_spesa': 'contabilita_nave', 'default_spesa_previsionale_id': self.id}
@@ -424,7 +424,7 @@ class SpesaPrevisionale(models.Model):
     currency_id = fields.Many2one("res.currency", string="Valuta", required=True, related='previsionale_id.currency_id')
     tipo_id = fields.Many2one("ey_contabilita_navi.tipo_spesa_previsionale", string="Spesa", index=True, required=True)
     previsionale_id = fields.Many2one("ey_contabilita_navi.previsionale_contratto", index=True)
-    account_move_id = fields.Many2one("account.move", string="Contabilita", compute="_compute_account_move_id")
+    account_move_id = fields.Many2one("account.move", string="Contabilita", compute="_compute_account_move_id", store=True)
 
     # CAMPI ONE2MANY
     account_move_ids = fields.One2many("account.move", "spesa_previsionale_id", string="Contabilita")
@@ -432,59 +432,22 @@ class SpesaPrevisionale(models.Model):
 
 class TipoSpesaPrevisionale(models.Model):
     _name = "ey_contabilita_navi.tipo_spesa_previsionale"
+    _description = "Tipo spesa previsionale"
 
     name = fields.Char(string="Tipo spesa", index=True, required=True)
 
 
 class AnticipiArmatore(models.Model):
     _name = "ey_contabilita_navi.anticipi_armatore"
-
-    ##### FUNZIONI PER IL SET E IL GET DEL BINARY
-    def _get_document(self):
-        ids = []
-        for rec in self:
-            ids.append(rec.id)
-        ir_attachment_model = self.env['ir.attachment']
-        domain_attachment = [('res_model', '=', self._name), ('res_id', 'in', ids)]
-        attachments = ir_attachment_model.search(domain_attachment)
-        for att in attachments:
-            for rec in self:
-                if rec.id == att.res_id:
-                    rec.document = att.datas
-                    break
-
-    def _set_document(self):
-        self.ensure_one()
-        max_id = 0
-        cr = self._cr
-        cr.execute("SELECT max(id) AS id FROM ey_corsi_documento_corso")
-        dati = cr.dictfetchone()
-        if dati['id']:
-            max_id = int(dati['id']) + 1
-        else:
-            max_id = 1
-        ir_attachment_model = self.env['ir.attachment']
-        dati = {
-            'name': 'documenti_contratto_' + str(max_id),
-            'datas_fname': 'documenti_contratto_' + str(max_id),
-            'res_model': self._name,
-            'res_id': self.id,
-            'datas': self.document
-        }
-        attachments = ir_attachment_model.search([('res_model', '=', self._name), ('res_id', '=', self.id)])
-        if attachments and not self.document:
-            return attachments.unlink()
-        if attachments:
-            return attachments.write(dati)
-        else:
-            return ir_attachment_model.create(dati)
+    _description = "Anticipi armatore"
+    _inherit = ["ey_base.documento_allegato_mixin"]
+    _ey_document_prefix = "anticipi_armatore"
 
     def button_crea_linea_contabile(self):
         for rec in self:
             return {
                 'type': 'ir.actions.act_window',
                 'res_model': 'account.move',
-                'view_type': 'form',
                 'view_mode': 'form',
                 'target': 'current',
                 'context': {'default_collegamento_linea_spesa': 'anticipi_armatore', 'default_anticipi_armatore_id': self.id}
@@ -499,13 +462,11 @@ class AnticipiArmatore(models.Model):
     name = fields.Char(string="Descrizione", index=True, required=True)
     data = fields.Date(string="Data", required=True)
     cifra = fields.Monetary(string="Spesa", required=True)
-    document = fields.Binary(compute="_get_document", inverse="_set_document", string="Documento")
-    document_fname = fields.Char(string="File name")
 
     # CAMPI MANY2ONE
     previsionale_id = fields.Many2one("ey_contabilita_navi.previsionale_contratto", index=True)
     currency_id = fields.Many2one("res.currency", string="Valuta", required=True, related='previsionale_id.currency_id')
-    account_move_id = fields.Many2one("account.move", string="Contabilita", compute="_compute_account_move_id")
+    account_move_id = fields.Many2one("account.move", string="Contabilita", compute="_compute_account_move_id", store=True)
     status_account = fields.Selection(string="Status contabile", related='account_move_id.state')
 
     # CAMPI ONE2MANY

@@ -1,19 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="0">
-            <record id="module_ey_pratiche_group_category" model="ir.module.category">
-                <field name="name">E-Yachts Pratiche</field>
-                <field name="description">Permessi sulle pratiche gestite da E-Yachts</field>
-                <field name="sequence">10</field>
-            </record>
-    
-            <record id="group_ey_pratiche_manager" model="res.groups">
-                <field name="name">E-Yachts Pratiche Manager</field>
-            </record>
-    
-            <record id="group_ey_pratiche_user" model="res.groups">
-                <field name="name">E-Yachts Pratiche User</field>
-            </record>
-       
+        <record id="module_ey_pratiche_group_category" model="ir.module.category">
+            <field name="name">E-Yachts Pratiche</field>
+            <field name="description">Permessi sulle pratiche gestite da E-Yachts</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- Odoo 19: il form utente mostra i gruppi attraverso il privilegio. -->
+        <record id="res_groups_privilege_ey_pratiche" model="res.groups.privilege">
+            <field name="name">E-Yachts Pratiche</field>
+            <field name="category_id" ref="module_ey_pratiche_group_category"/>
+        </record>
+
+        <record id="group_ey_pratiche_user" model="res.groups">
+            <field name="name">E-Yachts Pratiche User</field>
+            <field name="privilege_id" ref="res_groups_privilege_ey_pratiche"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_ey_pratiche_manager" model="res.groups">
+            <field name="name">E-Yachts Pratiche Manager</field>
+            <field name="privilege_id" ref="res_groups_privilege_ey_pratiche"/>
+            <field name="implied_ids" eval="[(4, ref('group_ey_pratiche_user'))]"/>
+            <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        </record>
     </data>
 </odoo>

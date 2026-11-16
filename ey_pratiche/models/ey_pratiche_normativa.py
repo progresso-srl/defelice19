@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, models
+from odoo import Command, api, fields, models
 from ..vendor import ey_pratiche_utils
 
 class EyPraticheNormativa(models.Model):
     _name = "ey_pratiche.normativa"    
+    _description = "Normativa"
     _order = 'data_provvedimento desc'
     
     @api.depends('natura_id', 'natura_id.name', 'numero_provvedimento', 'data_provvedimento', 'testo_descrittivo')
@@ -42,43 +43,44 @@ class EyPraticheNormativa(models.Model):
     ufficio_emissione_id = fields.Many2one("ey_pratiche.ue_normativa", string="Ufficio emissione", index=True)
     attivo = fields.Boolean(string="Attivo", default=True, index=True)
     
-    @api.model
-    def create(self, vals):
-        normativa = super(EyPraticheNormativa, self).create(vals)
-        if 'normative_collegate' in vals:
-            for nc in normativa.normative_collegate:
-                query = "INSERT INTO ey_pratiche_normative_collegate_rel (normativa1_id, normativa2_id) VALUES (" + str(nc.id) + ", " + str(normativa.id) + ")"
-                self.env.cr.execute(query)
-        return normativa
+    @api.model_create_multi
+    def create(self, vals_list):
+        normative = super().create(vals_list)
+        for normativa, vals in zip(normative, vals_list):
+            if 'normative_collegate' in vals:
+                normativa._ey_sincronizza_collegate({normativa.id: set()})
+        return normative
 
     def write(self, vals):
+        prima = {n.id: set(n.normative_collegate.ids) for n in self} if 'normative_collegate' in vals else None
+        res = super().write(vals)
+        if prima is not None:
+            self._ey_sincronizza_collegate(prima)
+        return res
+
+    def _ey_sincronizza_collegate(self, prima):
+        """Rende simmetrico il collegamento fra normative.
+
+        ``prima``: {id normativa: set degli id collegati prima della modifica}.
+        Se A collega B, anche B collega A; se A scollega B, anche B scollega
+        A. Prima lo faceva SQL scritto a mano sulla tabella di relazione; le
+        righe di una normativa cancellata le toglie il database (cascade).
+        """
+        if self.env.context.get('ey_sync_collegate'):
+            return
+        altre = self.with_context(ey_sync_collegate=True)
         for n in self:
-            if 'normative_collegate' in vals:
-                nc_copy = []
-                for nc_id in vals['normative_collegate'][0][2]:
-                    nc_copy.append(nc_id)
-                for nc in n.normative_collegate:
-                    if nc.id in nc_copy:
-                        nc_copy.remove(nc.id)
-                        continue
-                    else:
-                        query = "DELETE FROM ey_pratiche_normative_collegate_rel WHERE normativa1_id=" + str(nc.id) + " AND normativa2_id=" + str(n.id)
-                        self.env.cr.execute(query)
-                for nc_id in nc_copy:
-                    query = "INSERT INTO ey_pratiche_normative_collegate_rel (normativa1_id, normativa2_id) VALUES (" + str(nc_id) + ", " + str(n.id) + ")"
-                    self.env.cr.execute(query)
-        return super(EyPraticheNormativa, self).write(vals)
+            dopo = set(n.normative_collegate.ids)
+            before = prima.get(n.id, set())
+            for nid in dopo - before:
+                altre.browse(nid).write({'normative_collegate': [Command.link(n.id)]})
+            for nid in before - dopo:
+                altre.browse(nid).write({'normative_collegate': [Command.unlink(n.id)]})
 
-    def unlink(self):
-        for p in self:
-            for nc in p.normative_collegate:
-                query = "DELETE FROM ey_pratiche_normative_collegate_rel WHERE normativa1_id=" + str(nc.id) + " AND normativa2_id=" + str(p.id)
-                self.env.cr.execute(query)
-        return super(EyPraticheNormativa, self).unlink()
 
-    
 class UfficioEmissioneNormativa(models.Model):
     _name = "ey_pratiche.ue_normativa"
+    _description = "Ue normativa"
 
     name = fields.Char(string="Ufficio emissione", index=True, required=True)
 
@@ -93,57 +95,32 @@ class UfficioEmissioneNormativa(models.Model):
     
 class AmbitoNormativa(models.Model):
     _name = "ey_pratiche.ambito_normativa"
+    _description = "Ambito normativa"
 
     name = fields.Char(string="Ambito", index=True, required=True)
 
 
 class CategoriaNormativa(models.Model):
     _name = "ey_pratiche.categoria_normativa"
+    _description = "Categoria normativa"
 
     name = fields.Char(string="Categoria", index=True, required=True)
 
 
 class NaturaNormativa(models.Model):
     _name = "ey_pratiche.natura_normativa"
+    _description = "Natura normativa"
 
     name = fields.Char(string="Natura provvedimento", index=True, required=True)
 
 class AllegatoNormativa(models.Model):
     _name = "ey_pratiche.allegato_normativa"
-
-    ##### FUNZIONI PER IL SET E IL GET DEL BINARY
-    def _get_document(self):
-        ids = []
-        for rec in self:
-            ids.append(rec.id)
-        ir_attachment_model = self.env['ir.attachment']
-        domain_attachment = [('res_model', '=', self._name), ('res_id', 'in', ids)]
-        attachments = ir_attachment_model.search(domain_attachment)
-        for att in attachments:
-            for rec in self:
-                if rec.id == att.res_id:
-                    rec.document = att.datas
-                    break
-
-    def _set_document(self):
-        ir_attachment_model = self.env['ir.attachment']
-        dati = {
-            'name': 'allegato_normativa_' + str(self.id),
-            'datas_fname': 'allegato_normativa' + str(self.id),
-            'res_model': self._name,
-            'res_id': self.id,
-            'datas': self.document
-        }
-        attachments = ir_attachment_model.search([('res_model', '=', self._name), ('res_id', '=', self.id)])
-        if attachments:
-            return attachments.write(dati)
-        else:
-            return ir_attachment_model.create(dati)
+    _description = "Allegato normativa"
+    _inherit = ["ey_base.documento_allegato_mixin"]
+    _ey_document_prefix = "allegato_normativa"
 
     name = fields.Char(string="Descrizione", required=True, index=True)
     normativa_id = fields.Many2one("ey_pratiche.normativa", index=True)
-    document = fields.Binary(compute="_get_document", inverse="_set_document", string="Documento")
-    document_fname = fields.Char(string="File name")
     evidenza = fields.Boolean(string="In evidenza")
     
     

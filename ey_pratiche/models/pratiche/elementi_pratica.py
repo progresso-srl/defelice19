@@ -7,11 +7,12 @@ import time
 
 class AlertPratica(models.Model):
     _name = "ey_pratiche.alert_pratica_nave"
+    _description = "Alert pratica nave"
     _order = "attivo desc"
 
     # funzione per user corrente
     def default_user_id(self):
-        return self._uid
+        return self.env.uid
 
     pratica_id = fields.Many2one("ey_pratiche.pratica", index=True)
     data = fields.Date(string="Data", required=True)
@@ -28,8 +29,12 @@ class AlertPratica(models.Model):
                         raise ValidationError("Esiste già un alert attivo per questa pratica")
         return super(AlertPratica, self).write(vals)
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
+        # Odoo 19: create riceve sempre una lista; la logica resta per record.
+        return self.browse().concat(*(self._ey_create_one(vals) for vals in vals_list))
+
+    def _ey_create_one(self, vals):
         alert = super(AlertPratica, self).create(vals)
         altri_alert = self.search([('pratica_id', '=', alert.pratica_id.id)])
         for ap in altri_alert:
@@ -41,6 +46,7 @@ class AlertPratica(models.Model):
     
 class AllegatoPratica(models.Model):
     _name = "ey_pratiche.allegato_pratica"
+    _description = "Allegato pratica"
     
 
     name = fields.Char(string="Descrizione", required=True, index=True)
@@ -52,12 +58,13 @@ class AllegatoPratica(models.Model):
     
 class AttOperatorePratica(models.Model):
     _name = "ey_pratiche.att_operatore_pratica"
+    _description = "Att operatore pratica"
     _order = "data desc"
 
     
     # funzione per user corrente
     def default_user_id(self):
-        return self._uid
+        return self.env.uid
 
     pratica_id = fields.Many2one("ey_pratiche.pratica", index=True)
     data = fields.Datetime(string="Data", index=True, default=lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'))
@@ -71,11 +78,12 @@ class AttOperatorePratica(models.Model):
     
 class AttSistemaPratica(models.Model):
     _name = "ey_pratiche.att_sistema_pratica"
+    _description = "Att sistema pratica"
     _order = "data desc"
 
     # funzione per user corrente
     def default_user_id(self):
-        return self._uid
+        return self.env.uid
 
     pratica_id = fields.Many2one("ey_pratiche.pratica", index=True)
     data = fields.Datetime(string="Data", index=True, default=lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'))
@@ -96,6 +104,7 @@ class ContattoPraticaNave(models.Model):
 
 class FollowUpPratica(models.Model):
     _name = "ey_pratiche.follow_up_pratica"    
+    _description = "Follow up pratica"
 
     @api.depends('descrizione')
     def _compute_preview(self):
@@ -107,7 +116,7 @@ class FollowUpPratica(models.Model):
 
     # funzione per user corrente
     def default_user_id(self):
-        return self._uid
+        return self.env.uid
 
     pratica_id = fields.Many2one("ey_pratiche.pratica", index=True)
     data = fields.Date(string="Data", index=True, default=lambda *a: time.strftime('%Y-%m-%d'))
@@ -122,6 +131,7 @@ class FollowUpPratica(models.Model):
     
 class IndirizzoPartner(models.Model):
     _name = "ey_pratiche.indirizzo_partner"
+    _description = "Indirizzo partner"
 
     @api.depends('street', 'street2', 'city', 'state', 'zip', 'country')
     def _compute_address(self):
@@ -153,12 +163,12 @@ class IndirizzoPartner(models.Model):
 
 class PropArmPratica(models.Model):
     _name = "ey_pratiche.prop_arm_pratica"
+    _description = "Prop arm pratica"
 
     def get_partner(self):
         for pap in self:
             return {
                 'type': 'ir.actions.act_window',
-                'view_type': 'form',
                 'view_mode': 'form',
                 'res_model': 'res.partner',
                 'res_id': pap.partner_id.id,
@@ -169,7 +179,6 @@ class PropArmPratica(models.Model):
         for pap in self:
             return {
                 'type': 'ir.actions.act_window',
-                'view_type': 'form',
                 'view_mode': 'form',
                 'res_model': 'ey_pratiche.rappresentante_armatore',
                 'res_id': pap.rappresentante_id.id,
@@ -198,11 +207,13 @@ class PropArmPratica(models.Model):
 
 class QualificaPraticaNave(models.Model):
     _name = "ey_pratiche.qualifica_pratica_nave"
+    _description = "Qualifica pratica nave"
     
     name = fields.Char(string="Qualifica", index=True, required=True)
     
 class RappresentanteArmatore(models.Model):
     _name = "ey_pratiche.rappresentante_armatore"
+    _description = "Rappresentante armatore"
     _rec_name = "rec_name"
 
     @api.depends('cognome', 'nome', 'fiscalcode')
@@ -232,12 +243,11 @@ class RappresentanteArmatore(models.Model):
     state_id = fields.Many2one("res.country.state", string='Provincia/Stato', ondelete='restrict')
     country_id = fields.Many2one('res.country', string='Nazione', ondelete='restrict')
 
-    _sql_constraints = [
-        ('fiscalcode_uniq', 'UNIQUE (fiscalcode)', u'Esiste già un rappresentante con questo codice fiscale!')
-    ]
+    _fiscalcode_uniq = models.Constraint('UNIQUE (fiscalcode)', 'Esiste già un rappresentante con questo codice fiscale!')
 
 class EquipaggioNavePratica(models.Model):
     _name = "ey_pratiche.equipaggio_nave_pratica"
+    _description = "Equipaggio nave pratica"
     
     pratica_id = fields.Many2one("ey_pratiche.pratica", index=True)
     
@@ -256,7 +266,6 @@ class EquipaggioNavePratica(models.Model):
         for rec in self:
             return {
                 'type': 'ir.actions.act_window',
-                'view_type': 'form',
                 'view_mode': 'form',
                 'res_model': 'res.partner',
                 'res_id': rec.partner_id.id,

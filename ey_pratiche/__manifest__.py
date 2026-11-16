@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'ey_pratiche',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.0.1',
     'summary': 'E-Yacht — Gestione pratiche marittime',
     'category': 'Services',
     'author': 'Progresso SRL',
-    'website': '#',
-    'depends': ['base', 'mail', 'report_py3o', 'ey_base'],
+    'website': 'https://www.progresso.srl',
+    # ey_corsi: la pratica legge cognome, nome, stato civile e cittadinanza del partner
+    'depends': ['base', 'mail', 'report_py3o', 'ey_base', 'ey_corsi'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',

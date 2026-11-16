@@ -4,6 +4,7 @@ from odoo.exceptions import ValidationError
 
 class WizCollegaLineaSpesaNave(models.TransientModel):
     _name = "ey_contabilita_navi.wiz_collega_linea_spesa_nave"
+    _description = "Wiz collega linea spesa nave"
 
     @api.onchange('unita_id')
     def get_previsionali(self):    
@@ -72,6 +73,7 @@ class WizCollegaLineaSpesaNave(models.TransientModel):
 
 class WizCollegaLineaSpesaArmatore(models.TransientModel):
     _name = "ey_contabilita_navi.wiz_collega_linea_spesa_armatore"
+    _description = "Wiz collega linea spesa armatore"
 
     @api.onchange('unita_id')
     def get_previsionali(self):    

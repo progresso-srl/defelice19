@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'ey_base',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.0.1',
     'summary': 'E-Yacht — Modulo base anagrafiche navali',
-    'category': 'Uncategorized',
+    'category': 'Services',
     'author': 'Progresso SRL',
-    'website': '#',
+    'website': 'https://www.progresso.srl',
     'depends': ['base', 'account', 'mail'],
     'data': [
         'security/security.xml',

@@ -20,7 +20,6 @@ class AccountMove(models.Model):
             return {
                 'type': 'ir.actions.act_window',
                 'res_model': 'ey_contabilita_navi.wiz_collega_linea_spesa_nave',
-                'view_type': 'form',
                 'view_mode': 'form',
                 'target': 'new',
                 'context': {'default_account_move_id': self.id}
@@ -31,7 +30,6 @@ class AccountMove(models.Model):
             return {
                 'type': 'ir.actions.act_window',
                 'res_model': 'ey_contabilita_navi.wiz_collega_linea_spesa_armatore',
-                'view_type': 'form',
                 'view_mode': 'form',
                 'target': 'new',
                 'context': {'default_account_move_id': self.id}

@@ -6,7 +6,10 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     name = fields.Char(string='Nome completo', required=False, index=True)
-    cognome = fields.Char(string='Cognome (rag. sociale)', required=True, index=True)
+    # Obbligatorio nel form, non sul modello: sul modello bloccava ogni partner
+    # creato senza cognome (indirizzi senza nome, partner di Odoo e dei moduli)
+    # e non si poteva installare su un database con partner esistenti.
+    cognome = fields.Char(string='Cognome (rag. sociale)', index=True)
     nome = fields.Char(string='Nome', index=True)
     iami_cid = fields.Char(string='IAMI CID', index=True)
     codice_unico = fields.Char(string='Codice unico', index=True)

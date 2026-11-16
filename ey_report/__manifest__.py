@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'ey_report',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.0.1',
     'summary': 'E-Yacht — Estensioni report contabili',
     'category': 'Accounting/Reporting',
     'author': 'Progresso SRL',
-    'website': '#',
+    'website': 'https://www.progresso.srl',
     'depends': ['account', 'account_financial_report', 'date_range'],
-    'data': [
-        'views/report_general_ledger/report_general_ledger_view.xml',
-        'report/templates/general_ledger_view.xml'
-    ],
+    # I template del Mastro (saldo di periodo, colonne) erano quelli di OCA 12
+    # e mandavano in errore la stampa: sono in legacy/ey_report, da rifare
+    # sui template di OCA 19.
+    'data': [],
     'images': [],
     'license': 'AGPL-3',
     'installable': True,

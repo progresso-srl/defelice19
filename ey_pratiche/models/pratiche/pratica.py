@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models
+from odoo import Command, api, fields, models
 from odoo.exceptions import ValidationError
 from datetime import datetime
 
 class Pratica(models.Model):
     _name = "ey_pratiche.pratica"
+    _description = "Pratica"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "state asc, data_pratica desc"
     
@@ -78,12 +79,12 @@ class Pratica(models.Model):
     
     
     
-    report_ids = fields.One2many("ey_pratiche.report_pratica", "pratica_id", string="Reports", ondelete="cascade")
+    report_ids = fields.One2many("ey_pratiche.report_pratica", "pratica_id", string="Reports")
     chiave_ids = fields.One2many("ey_pratiche.chiave_pratica", "pratica_id", string="Chiavi")
     data_pratica = fields.Date(string="Data pre-istruzione / apertura", index=True, required=True) 
     riferimento_pratica = fields.Char(string="N. Protocollo / Riferimento pratica", index=True)
     state = fields.Selection(_STATO_PRATICA, string="Stato pratica", index=True, required=True,
-                            track_visibility='onchange') #default diverso per i due tipi di pratiche
+                            tracking=True) #default diverso per i due tipi di pratiche
     
     
     tipo_pratica = fields.Char(string="Tipo pratica", index=True)
@@ -102,7 +103,7 @@ class Pratica(models.Model):
     documenti_pratica_ids = fields.One2many("ey_pratiche.allegato_pratica", "pratica_id", string="Documenti pratica") #track_visibility="onchange"
    
     # soggetto per fatturazione
-    soggetto_fatturazione_id = fields.Many2one("res.partner", string="Soggetto fatturazione", track_visibility="onchange")
+    soggetto_fatturazione_id = fields.Many2one("res.partner", string="Soggetto fatturazione", tracking=True)
     
     # attività di sistema
     att_sistema_ids = fields.One2many("ey_pratiche.att_sistema_pratica", "pratica_id", string=u"Attività di sistema")
@@ -200,14 +201,23 @@ class Pratica(models.Model):
                 raise ValidationError("Il campo Soggetti è obbligatorio per questo tipo di template")
             
     @api.constrains('partner_id','nave_id')
-    def _validate_fields(self, context=None):
-        if (self.nave_id and self.nave_id.blacklist) or (self.partner_id and self.partner_id.blacklist):
-            raise ValidationError("Errore di inserimento. Contattare amministratore")
-        
+    def _ey_in_blacklist(self):
+        # blacklist sul partner lo aggiunge ey_corsi, che non e' una
+        # dipendenza di ey_pratiche: se manca, il partner non e' in black list.
+        return bool(self.nave_id.blacklist or getattr(self.partner_id, 'blacklist', False))
+
+    # Era un override di _validate_fields con la firma di Odoo 12: in Odoo 19
+    # mandava in errore ogni salvataggio e, senza super(), avrebbe spento
+    # tutti gli altri vincoli del modello.
+    @api.constrains('nave_id', 'partner_id')
+    def _check_blacklist(self):
+        for pratica in self:
+            if pratica._ey_in_blacklist():
+                raise ValidationError("Errore di inserimento. Contattare amministratore")
+
     @api.onchange("partner_id","nave_id")
     def onchange_partner_id(self):
-            
-        if (self.nave_id and self.nave_id.blacklist) or (self.partner_id and self.partner_id.blacklist):
+        if self._ey_in_blacklist():
             raise ValidationError("Errore di inserimento. Contattare amministratore")
         
     
@@ -233,21 +243,25 @@ class Pratica(models.Model):
         return rec
     
     
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
+        # Odoo 19: create riceve sempre una lista; la logica resta per record.
+        return self.browse().concat(*(self._ey_create_one(vals) for vals in vals_list))
+
+    def _ey_create_one(self, vals):
         name = ''
-        if vals['tpl_id']:
+        if vals.get('tpl_id'):
             name += self.env['ey_pratiche.tpl'].browse([vals['tpl_id']])[0].name
             
         #TODO AGGIUNGERE CONTROLLI RISPETTIVAMENTE CHE IL TIPO TEMPLATE SIA NAVI IN UN CASO E SOGGETTI NELL ALTRO
-        if vals['nave_id']:
+        if vals.get('nave_id'):
             # pratica nave
             name += " - " + self.env['ey_base.unita'].browse([vals['nave_id']])[0].name
-        elif vals['partner_id']:
+        elif vals.get('partner_id'):
             # pratica soggetto
             name += " - " + self.env['res.partner'].browse([vals['partner_id']])[0].name
         
-        if vals['partner_riferimento_id']:
+        if vals.get('partner_riferimento_id'):
             name += " - " + self.env['res.partner'].browse([vals['partner_riferimento_id']])[0].name
         vals['name'] = name
         pratica = super(Pratica, self).create(vals)    
@@ -283,7 +297,8 @@ class Pratica(models.Model):
         if partner_rif:
             cognome_marittimo = partner_rif.cognome
             nome_marittimo = partner_rif.nome
-            cf_marittimo = partner_rif.fiscalcode
+            # fiscalcode e' di l10n_it_fiscalcode (OCA), non fra le dipendenze
+            cf_marittimo = getattr(partner_rif, 'fiscalcode', '') or ''
             indirizzo_marittimo = self._get_address(partner_rif)
             if partner_rif.stato_civile:
                 stato_civile_marittimo = partner_rif.stato_civile.name
@@ -477,19 +492,38 @@ class Pratica(models.Model):
         #     'descrizione': "Creata pratica in stato " + stato_pratica
         # }
         # self.env['ey_pratiche.att_sistema_pratica'].create(as_vals)
-        if 'ente_ids' in vals and vals['ente_ids']:
-            for val in vals['ente_ids']:
-                ente = self.env['ey_pratiche.ente'].search([('id','=',val[2]['partner_id'])], limit=1)
-                identificatore = " (" + val[2]['identificatore'] + ")" if 'identificatore' in val[2] and val[2]['identificatore'] else ''
-                pratica.message_post("Aggiunto Ente: " + ente.denominazione + identificatore)
+        for val in vals.get('ente_ids') or []:
+            if val[0] == Command.CREATE:
+                pratica._ey_nota_ente_aggiunto(val[2])
          
         
-        #PRATICHE COLLEGATE
+        #PRATICHE COLLEGATE: il collegamento vale nei due versi
         if 'pratiche_collegate' in vals:
-            for pc in pratica.pratiche_collegate:
-                query = "INSERT INTO ey_pratiche_pratiche_collegate_rel (pratica1_id, pratica2_id) VALUES (" + str(pc.id) + ", " + str(pratica.id) + ")"
-                self.env.cr.execute(query)
+            pratica._ey_sincronizza_collegate({pratica.id: set()})
         return pratica
+
+    def _ey_nota_ente_aggiunto(self, ente_vals):
+        ente = self.env['ey_pratiche.ente'].browse(ente_vals.get('partner_id'))
+        identificatore = " (%s)" % ente_vals['identificatore'] if ente_vals.get('identificatore') else ''
+        self.message_post(body="Aggiunto Ente: %s%s" % (ente.denominazione or '', identificatore))
+
+    def _ey_sincronizza_collegate(self, prima):
+        """Rende simmetrico il collegamento fra pratiche.
+
+        ``prima``: {id pratica: set degli id collegati prima della modifica}.
+        Se A collega B, anche B collega A; se A scollega B, anche B scollega
+        A. Prima lo faceva SQL scritto a mano sulla tabella di relazione.
+        """
+        if self.env.context.get('ey_sync_collegate'):
+            return
+        altre = self.with_context(ey_sync_collegate=True)
+        for p in self:
+            dopo = set(p.pratiche_collegate.ids)
+            before = prima.get(p.id, set())
+            for pid in dopo - before:
+                altre.browse(pid).write({'pratiche_collegate': [Command.link(p.id)]})
+            for pid in before - dopo:
+                altre.browse(pid).write({'pratiche_collegate': [Command.unlink(p.id)]})
     
     
     
@@ -535,7 +569,7 @@ class Pratica(models.Model):
                     'stato_civile': stato_civile,
                     'indirizzo_id': self._get_address(partner),
                     'identificatore': item.identificatore,
-                    'fiscalcode': partner.fiscalcode
+                    'fiscalcode': getattr(partner, 'fiscalcode', False),
                 }
                 if not prop_arm:
                     vals['ruolo'] = item.ruolo_id.name
@@ -604,21 +638,6 @@ class Pratica(models.Model):
 
     def write(self, vals):
         for p in self:
-            #pratiche collegate
-            if 'pratiche_collegate' in vals:
-                pc_copy = []
-                for pc_id in vals['pratiche_collegate'][0][2]:
-                    pc_copy.append(pc_id)
-                for pc in p.pratiche_collegate:
-                    if pc.id in pc_copy:
-                        pc_copy.remove(pc.id)
-                        continue
-                    else:
-                        query = "DELETE FROM ey_pratiche_pratiche_collegate_rel WHERE pratica1_id=" + str(pc.id) + " AND pratica2_id=" + str(p.id)
-                        self.env.cr.execute(query)
-                for pc_id in pc_copy:
-                    query = "INSERT INTO ey_pratiche_pratiche_collegate_rel (pratica1_id, pratica2_id) VALUES (" + str(pc_id) + ", " + str(p.id) + ")"
-                    self.env.cr.execute(query)
             # passaggio di stato in attività di sistema
             if 'state' in vals and vals['state'] != p.state:
                 state_before = dict(p._fields['state'].selection).get(p.state) #p.state.split("-")[1]
@@ -639,25 +658,19 @@ class Pratica(models.Model):
                         # Ente rimosso
                         ente_pratica =  p.ente_ids.filtered(lambda r:r.id == val[1])
                         identificatore = " (" + ente_pratica.identificatore + ")" if ente_pratica.identificatore else ''                
-                        p.message_post("Rimosso Ente: " + ente_pratica.partner_id.denominazione + identificatore)
+                        p.message_post(body="Rimosso Ente: %s%s" % (ente_pratica.partner_id.denominazione or '', identificatore))
                     elif val[0] == 0:
-                        # Ente aggiunto
-                        ente = self.env['ey_pratiche.ente'].search([('id','=',val[2]['partner_id'])], limit=1)
-                        identificatore = " (" + val[2]['identificatore'] + ")" if 'identificatore' in val[2] and val[2]['identificatore'] else ''
-                        p.message_post("Aggiunto Ente: " + ente.denominazione + identificatore)
-             
-        return super(Pratica, self).write(vals)
+                        p._ey_nota_ente_aggiunto(val[2])
 
-    def unlink(self):
-        for p in self:
-            #pratiche collegate
-            for pc in p.pratiche_collegate:
-                query = "DELETE FROM ey_pratiche_pratiche_collegate_rel WHERE pratica1_id=" + str(pc.id) + " AND pratica2_id=" + str(p.id)
-                self.env.cr.execute(query)
-        return super(Pratica, self).unlink()
+        prima = {p.id: set(p.pratiche_collegate.ids) for p in self} if 'pratiche_collegate' in vals else None
+        res = super(Pratica, self).write(vals)
+        if prima is not None:
+            self._ey_sincronizza_collegate(prima)
+        return res
 
 class ChiavePratica(models.Model):
     _name = "ey_pratiche.chiave_pratica"
+    _description = "Chiave pratica"
     _order = "priority asc"
 
     pratica_id = fields.Many2one("ey_pratiche.pratica", index=True)
@@ -670,6 +683,7 @@ class ChiavePratica(models.Model):
     
 class ReportPratica(models.Model):
     _name = "ey_pratiche.report_pratica"
+    _description = "Report pratica"
     _order = "priority asc"
 
     pratica_id = fields.Many2one("ey_pratiche.pratica", index=True)

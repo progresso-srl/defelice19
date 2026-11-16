@@ -7,12 +7,23 @@
             <field name="sequence">10</field>
         </record>
 
-        <record id="group_ey_contabilita_navi_manager" model="res.groups">
-            <field name="name">E-Yachts Contabilità Navi / Manager</field>
+        <!-- Odoo 19: il form utente mostra i gruppi attraverso il privilegio. -->
+        <record id="res_groups_privilege_ey_contabilita_navi" model="res.groups.privilege">
+            <field name="name">E-Yachts Contabilità Navi</field>
+            <field name="category_id" ref="module_ey_contabilita_navi_category"/>
         </record>
 
         <record id="group_ey_contabilita_navi_user" model="res.groups">
             <field name="name">E-Yachts Contabilità Navi / User</field>
+            <field name="privilege_id" ref="res_groups_privilege_ey_contabilita_navi"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_ey_contabilita_navi_manager" model="res.groups">
+            <field name="name">E-Yachts Contabilità Navi / Manager</field>
+            <field name="privilege_id" ref="res_groups_privilege_ey_contabilita_navi"/>
+            <field name="implied_ids" eval="[(4, ref('group_ey_contabilita_navi_user'))]"/>
+            <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         </record>
     </data>
 </odoo>

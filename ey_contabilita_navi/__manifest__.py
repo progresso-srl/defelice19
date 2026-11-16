@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'ey_contabilita_navi',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.0.1',
     'summary': 'E-Yacht — Gestione contabilità navi',
     'category': 'Accounting',
     'author': 'Progresso SRL',
-    'website': '#',
-    'depends': ['ey_base'],
+    'website': 'https://www.progresso.srl',
+    'depends': ['ey_base', 'report_py3o'],  # report_py3o: preventivo, consuntivo, richiesta fondi
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
