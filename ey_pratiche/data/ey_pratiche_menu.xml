@@ -6,6 +6,7 @@
         name="Configuratore pratiche"
         id="ey_pratiche.configuratore_pratiche_menu"
         sequence="11"
+        web_icon="ey_pratiche,static/description/icon.png"
         />
         <!-- Configurazione pratiche -->
         <menuitem
@@ -19,6 +20,7 @@
             name="Gestione normative"
             id="ey_pratiche.gestione_normative_menu"
             sequence="12"
+            web_icon="ey_pratiche,static/description/icon_normative.png"
         />
         
     </data>

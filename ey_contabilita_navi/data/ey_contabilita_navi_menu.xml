@@ -3,7 +3,8 @@
     <data>
     
         <!-- Contabilita navi main menu -->
-        <menuitem name="Gestione navi" id="ey_contabilita_navi.main_menu" />
+        <menuitem name="Gestione navi" id="ey_contabilita_navi.main_menu"
+                  web_icon="ey_contabilita_navi,static/description/icon.png"/>
 
     </data>
 </odoo>
